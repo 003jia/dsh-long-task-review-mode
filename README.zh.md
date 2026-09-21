@@ -49,3 +49,21 @@ allowBuilds:
 | `maxTokensRecoveryLimit` | 3 | 输出截断恢复次数（0 关闭） |
 
 宿主半区对部署内全部 agent 生效（全局作用域）；浏览器半区渲染设置卡片。可选 DSH 设置服务存在时，宿主会在该服务可用后注册 `dsh-cc-loop`，并持续把已提交设置同步到循环机制。
+
+## Pi agent 定制包
+
+本仓库同时包含我们为 Pi agent 定制的两个可独立安装包：
+
+- `pi-cc-loop-alignment`：Claude Code 风格的工具步数提醒、上下文 snip、token budget、`plan_agent`。
+- `pi-claude-modes`：Claude Code 风格输入区、Default / Accept edits / Plan 快捷循环、Advanced 权限模式、费用显示与模型默认值记忆。
+
+从克隆后的仓库安装：
+
+```sh
+pi install ./pi-cc-loop-alignment
+pi install ./pi-claude-modes
+```
+
+两个包可以单独使用，也可以同时安装。不要把同一个包同时放进 `~/.pi/agent/extensions/` 和
+`settings.json` 的 `packages`，否则会重复加载。费用金额是 usage 中的 USD 估算值，人民币按固定
+7.1 汇率换算，仅供参考，不代表平台账单。

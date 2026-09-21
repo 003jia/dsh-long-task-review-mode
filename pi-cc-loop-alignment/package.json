@@ -1,0 +1,42 @@
+{
+  "name": "@003jia/pi-cc-loop-alignment",
+  "version": "0.2.1",
+  "description": "Align pi's agent loop with Claude Code's: per-turn tool-use budget (maxToolTurns), context-pressure tool-result snip pass, output-token budget with nudge continuation, max-output-tokens recovery, plus the snip (model-driven history removal) and plan_agent (read-only architect subagent) tools. Pi port of the dsh plugin @003jia/dsh-cc-loop-alignment.",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "cc-loop-alignment",
+    "claude-code",
+    "agent-loop",
+    "max-turns",
+    "token-budget"
+  ],
+  "license": "Apache-2.0",
+  "pi": {
+    "extensions": [
+      "./extensions/index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-agent-core": "*",
+    "@earendil-works/pi-tui": "*",
+    "@earendil-works/pi-ai": "*",
+    "typebox": "*"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": { "optional": true },
+    "@earendil-works/pi-agent-core": { "optional": true },
+    "@earendil-works/pi-tui": { "optional": true },
+    "@earendil-works/pi-ai": { "optional": true },
+    "typebox": { "optional": true }
+  },
+  "files": [
+    "extensions",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/003jia/dsh-cc-loop-alignment.git"
+  }
+}

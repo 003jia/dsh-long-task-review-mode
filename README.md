@@ -50,3 +50,20 @@ Restart the dsh host process. The settings card appears under Settings > Plugins
 | `maxTokensRecoveryLimit` | 3 | Output-cap resume attempts (0 = off) |
 
 The host half applies to every agent in the deployment (global scope); the browser half renders the settings card. When the optional DSH settings service is present, the host registers `dsh-cc-loop` when that service becomes available and keeps committed settings synchronized with the loop mechanisms.
+
+## Pi packages
+
+本仓库同时包含我们为 Pi agent 定制的两个可独立安装包：
+
+- `pi-cc-loop-alignment`：Claude Code 风格的工具步数提醒、上下文 snip、token budget、`plan_agent`。
+- `pi-claude-modes`：Claude Code 风格输入区、Default / Accept edits / Plan 快捷循环、Advanced 权限模式、费用显示与模型默认值记忆。
+
+从克隆后的仓库安装：
+
+```sh
+pi install ./pi-cc-loop-alignment
+pi install ./pi-claude-modes
+```
+
+两个包可以单独使用，也可以同时安装。不要把同一个包同时放进 `~/.pi/agent/extensions/` 和
+`settings.json` 的 `packages`，否则会重复加载。

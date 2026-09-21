@@ -1,0 +1,40 @@
+{
+  "name": "@003jia/pi-claude-modes",
+  "version": "0.2.0",
+  "description": "Claude Code-style permission modes and CLI editor UI for pi with mode, model, context, and working-directory status.",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "claude-code",
+    "plan-mode",
+    "accept-edits",
+    "permissions",
+    "modes"
+  ],
+  "license": "Apache-2.0",
+  "pi": {
+    "extensions": [
+      "./extensions/index.ts",
+      "./extensions/session-cost.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*",
+    "typebox": "*"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": { "optional": true },
+    "@earendil-works/pi-tui": { "optional": true },
+    "typebox": { "optional": true }
+  },
+  "files": [
+    "extensions",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/003jia/dsh-cc-loop-alignment.git"
+  }
+}

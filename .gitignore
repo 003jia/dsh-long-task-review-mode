@@ -2,3 +2,4 @@ node_modules/
 .pnpm-store/
 *.tsbuildinfo
 .DS_Store
+pi-claude-modes/.backups/
