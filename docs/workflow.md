@@ -16,7 +16,7 @@
 
 持久状态使用 `plugin:long-task/state` 旁路日志记录，不进入模型上下文，也不依赖聊天摘要。通过记录和用户模式操作在返回前 flush；记录版本变化必须保留转换。这是独立插件记录，不修改已发布的 DSH 会话格式。
 
-构建：`node scripts/build.mjs`。回归：`node --test tests/runtime.test.mjs`，使用正式 rc.3 Loader、Agent、Gateway、文件系统、压缩和 JSONL 持久化，仅外部推理脚本化。`tests/laya-live.mjs` 检查真实本地 Laya；`tests/live-e2e.mjs` 使用现有登录在临时目录调用真实主模型与 Laya。
+构建需先将 `DSH_SOURCE` 指向已构建的兼容 DSH 工作区，再运行 `node scripts/build.mjs`。回归运行 `node --test tests/*.test.mjs`，使用正式 rc.3 Loader、Agent、Gateway、文件系统、压缩和 JSONL 持久化，仅外部推理脚本化。真实 Laya 与 Jev 校验通过设置页执行；真实主模型与多项任务整体验收需另行执行，脚本化推理不能代替模型效果验收。
 
 迁移前备份 profile，四个旧 bundle 与新包不能同时推进任务；失败回退。未通过真实调用或客户端检查时，不能把构建通过当成正式验收完成。
 
