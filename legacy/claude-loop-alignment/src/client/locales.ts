@@ -1,0 +1,86 @@
+/**
+ * cc-loop settings-card copy: zh is the key source, en mirrors the key set.
+ */
+
+import type { CardCopyKey, SettingsCardKey as PluginCardKey } from './PluginSettingsCard.tsx'
+
+/** Shared card-chrome copy keys this locale must cover. */
+export type CcLoopKey = PluginCardKey<'settings.title' | 'settings.description' | 'settings.enabled' | 'settings.enabledHint' | 'settings.announceToAgent' | 'settings.announceToAgentHint' | 'settings.maxToolTurns' | 'settings.maxToolTurnsHint' | 'settings.snipAtRatio' | 'settings.snipAtRatioHint' | 'settings.compactAtRatio' | 'settings.compactAtRatioHint' | 'settings.turnTokenBudget' | 'settings.turnTokenBudgetHint' | 'settings.budgetCompletionRatio' | 'settings.budgetCompletionRatioHint' | 'settings.budgetDiminishingDelta' | 'settings.budgetDiminishingDeltaHint' | 'settings.maxTokensRecoveryLimit' | 'settings.maxTokensRecoveryLimitHint' | 'settings.inherit' | 'settings.on' | 'settings.off' | 'settings.overridden' | 'settings.reset' | 'settings.invalidNumber'>
+
+/** Chinese copy (key source). */
+export const zh: Record<CcLoopKey, string> = {
+  'settings.collapse': '收起',
+  'settings.expand': '展开',
+  'settings.notExposed': '当前部署未暴露本插件的设置命名空间，请检查宿主配置。',
+  'settings.unsaved': '有未保存的修改',
+  'settings.readOnly': '当前设置只读',
+  'settings.saveFailed': '保存失败',
+  'settings.discard': '丢弃',
+  'settings.save': '保存',
+  'settings.saving': '保存中…',
+  'settings.title': 'Claude Loop Alignment',
+  'settings.description': 'Claude Code agent loop 行为对齐：轮次工具预算、上下文剪枝、token 预算续写、输出截断恢复，以及 snip / plan_agent 工具。',
+  'settings.enabled': '启用插件',
+  'settings.enabledHint': '关闭后所有监听器、工具与公告段一并移除。',
+  'settings.announceToAgent': '向 agent 公告',
+  'settings.announceToAgentHint': '在系统提示中加入本插件的功能说明。',
+  'settings.maxToolTurns': '每轮工具步数上限',
+  'settings.maxToolTurnsHint': '每个用户轮次最多执行的工具步数；0 关闭预算。',
+  'settings.snipAtRatio': '剪枝触发占比',
+  'settings.snipAtRatioHint': '上下文压力达到该比例时自动剪枝工具结果；0 关闭。',
+  'settings.compactAtRatio': '压缩触发占比',
+  'settings.compactAtRatioHint': '上下文压力达到该比例时触发摘要压缩；与 compaction-basic 自动模式二选一。',
+  'settings.turnTokenBudget': '轮次 token 预算',
+  'settings.turnTokenBudgetHint': '输出 token 预算；未达完成比例时注入续写提示；0 关闭。',
+  'settings.budgetCompletionRatio': '预算完成比例',
+  'settings.budgetCompletionRatioHint': '达到该比例后停止续写提示。',
+  'settings.budgetDiminishingDelta': '收益递减阈值',
+  'settings.budgetDiminishingDeltaHint': '连续 3 次续写增量低于该 token 数时判定收益递减并停止。',
+  'settings.maxTokensRecoveryLimit': '输出截断恢复次数',
+  'settings.maxTokensRecoveryLimitHint': '输出上限触发后注入断点续写指令的次数上限；0 关闭。',
+  'settings.inherit': '继承',
+  'settings.on': '开',
+  'settings.off': '关',
+  'settings.overridden': '已覆盖默认值',
+  'settings.reset': '恢复默认',
+  'settings.invalidNumber': '请输入有效数字',
+}
+
+/** English copy. */
+export const en: Record<CcLoopKey, string> = {
+  'settings.collapse': 'Collapse',
+  'settings.expand': 'Expand',
+  'settings.notExposed': 'This deployment does not expose this plugin\u2019s settings namespace; check the host configuration.',
+  'settings.unsaved': 'Unsaved changes',
+  'settings.readOnly': 'Settings are read-only',
+  'settings.saveFailed': 'Save failed',
+  'settings.discard': 'Discard',
+  'settings.save': 'Save',
+  'settings.saving': 'Saving…',
+  'settings.title': 'Claude Loop Alignment',
+  'settings.description': 'Claude Code agent-loop behavior alignment: turn tool budget, context pruning, token-budget continuation, output-cap recovery, and the snip / plan_agent tools.',
+  'settings.enabled': 'Enable plugin',
+  'settings.enabledHint': 'Disables all listeners, tools, and the announcement section.',
+  'settings.announceToAgent': 'Announce to agents',
+  'settings.announceToAgentHint': 'Adds a system-prompt section describing this plugin\u2019s capabilities.',
+  'settings.maxToolTurns': 'Max tool-use steps per turn',
+  'settings.maxToolTurnsHint': 'Maximum tool-use steps per user turn; 0 disables the budget.',
+  'settings.snipAtRatio': 'Prune trigger ratio',
+  'settings.snipAtRatioHint': 'Prunes tool-result surface once context pressure reaches this ratio; 0 disables.',
+  'settings.compactAtRatio': 'Compact trigger ratio',
+  'settings.compactAtRatioHint': 'Triggers summary compaction at this pressure ratio; mutually exclusive with compaction-basic auto mode.',
+  'settings.turnTokenBudget': 'Turn token budget',
+  'settings.turnTokenBudgetHint': 'Output-token budget; a nudge continuation is injected below the completion ratio; 0 disables.',
+  'settings.budgetCompletionRatio': 'Budget completion ratio',
+  'settings.budgetCompletionRatioHint': 'Stops nudging once this share of the budget is consumed.',
+  'settings.budgetDiminishingDelta': 'Diminishing-returns delta',
+  'settings.budgetDiminishingDeltaHint': 'Stops after 3 continuations that each added fewer tokens than this.',
+  'settings.maxTokensRecoveryLimit': 'Output-cap recovery limit',
+  'settings.maxTokensRecoveryLimitHint': 'Max resume-steering attempts after an output-cap hit; 0 disables.',
+  'settings.inherit': 'Inherit',
+  'settings.on': 'On',
+  'settings.off': 'Off',
+  'settings.overridden': 'Overridden',
+  'settings.reset': 'Reset',
+  'settings.invalidNumber': 'Enter a valid number',
+}

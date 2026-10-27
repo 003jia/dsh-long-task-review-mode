@@ -1,7 +1,3 @@
-# dsh-cc-loop-alignment bundle patch: inserts the dual-face plugin row into
-# the web profile roster. The node half (exports ".") runs in the host
-# process (loop mechanisms, agent tools); the dsh.client declaration makes
-# the browser half (exports "./client") load in the web GUI settings section.
 - insert:
-    - id: cc-loop
-      name: '@003jia/dsh-cc-loop-alignment'
+    - id: long-task
+      name: "@deepseek-ai/dsh-long-task"

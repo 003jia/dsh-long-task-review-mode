@@ -1,22 +1,14 @@
-name: CI
-
-on:
-  push:
-  pull_request:
-
+name: Release artifact checks
+on: [push, pull_request]
 jobs:
-  verify:
+  artifact:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11.7.0
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.19.0
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run typecheck
-      - run: pnpm run test
-      - run: pnpm run build
+          node-version: 24
+      - run: node --check lib/index.js
+      - run: node --check lib/client.js
+      - run: npm pack --ignore-scripts
+# Real Loader/Agent regressions require DSH 0.2.1-rc.3. See docs/workflow.md.

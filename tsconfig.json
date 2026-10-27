@@ -1,19 +1,2671 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "jsx": "react-jsx",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "target": "ES2024",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": [
+      "ES2024",
+      "DOM",
+      "DOM.Iterable",
+      "ESNext.Disposable"
+    ],
     "strict": true,
-    "noEmit": true,
     "skipLibCheck": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "types": []
+    "allowImportingTsExtensions": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "rootDir": "src",
+    "outDir": "lib/types",
+    "types": [
+      "node",
+      "react"
+    ],
+    "paths": {
+      "@deepseek-ai/dsh-tools/types": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/tools/lib/types/types.d.ts"
+      ],
+      "@deepseek-ai/dsh-session": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/session/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/session/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/session/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-session": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-session/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-session/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-session/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-session/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-locale": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/locale/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-locale/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/locale/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/locale/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-slots": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-slots/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-slots/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-slots/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-slots/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-renderer": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-renderer/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-renderer/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-renderer/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-renderer/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-conversation": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-conversation/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-conversation/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-conversation/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-conversation/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-right": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-right/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-right/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-right/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-right/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-projection": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-projection/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-projection/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-projection/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-projection/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/cordis": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/vendor/cordis/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/cordis/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/vendor/cordis/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/vendor/cordis/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/schemastery": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/vendor/schemastery/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/schemastery/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/vendor/schemastery/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/vendor/schemastery/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-loop-flow": [
+        "./lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-loop-flow/*": [
+        "./lib/types/*.d.ts",
+        "./lib/types/*/index.d.ts"
+      ],
+      "react": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/node_modules/.pnpm/@types+react@18.3.31/node_modules/@types/react/index.d.ts"
+      ],
+      "react/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/node_modules/.pnpm/@types+react@18.3.31/node_modules/@types/react/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/node_modules/.pnpm/@types+react@18.3.31/node_modules/@types/react/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session/types": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/session/lib/types/types.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-projection/types": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-projection/lib/types/types.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-conversation/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-conversation/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-right/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-right/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-session/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-session/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-renderer/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-renderer/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-locale/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/locale/lib/types/client/index.d.ts"
+      ],
+      "react/jsx-runtime": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/node_modules/.pnpm/@types+react@18.3.31/node_modules/@types/react/jsx-runtime.d.ts"
+      ],
+      "@deepseek-ai/dsh-settings": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/settings/settings/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-settings/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/settings/settings/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/settings/settings/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-cot-translation-bundle": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/cot-translation-bundle/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-cot-translation-bundle/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/cot-translation-bundle/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/cot-translation-bundle/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-webhook": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webhook/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-webhook/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webhook/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webhook/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-computer-use-cua-driver-native": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/computer-use-cua-driver-native/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-computer-use-cua-driver-native/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/computer-use-cua-driver-native/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/computer-use-cua-driver-native/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-webhook-github": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webhook-github/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-webhook-github/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webhook-github/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webhook-github/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-webworker-runtime": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webworker-runtime/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-webworker-runtime/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webworker-runtime/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webworker-runtime/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-webworker-runtime/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webworker-runtime/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-session-query": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-session-query/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-session-query/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-session-query/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-session-query/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-speech-to-text": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/speech-to-text/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-speech-to-text/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/speech-to-text/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/speech-to-text/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-browser-use-runtime": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-runtime/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-browser-use-runtime/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-runtime/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-runtime/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-terminal-bundle": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/terminal-bundle/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-terminal-bundle/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/terminal-bundle/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/terminal-bundle/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-session-inspector": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-inspector/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-session-inspector/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-inspector/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-inspector/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-session-inspector/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-inspector/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-title-all-prompts-llm": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-title-all-prompts-llm/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-title-all-prompts-llm/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-title-all-prompts-llm/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-title-all-prompts-llm/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-session-titles-bundle": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-titles-bundle/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-session-titles-bundle/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-titles-bundle/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-titles-bundle/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-cot-translation": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-cot-translation/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-cot-translation/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-cot-translation/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-cot-translation/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-cot-translation/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-cot-translation/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-browser-use-chrome-devtools-mcp": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-chrome-devtools-mcp/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-browser-use-chrome-devtools-mcp/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-chrome-devtools-mcp/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-chrome-devtools-mcp/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-inspector": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/inspector/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-inspector/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/inspector/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/inspector/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-inspector/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/inspector/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-inspector-profile": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/inspector-profile/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-inspector-profile/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/inspector-profile/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/inspector-profile/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-skill-badge": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/skill-badge/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-skill-badge/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/skill-badge/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/skill-badge/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-agent-team-profile": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/agent-team-profile/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-agent-team-profile/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/agent-team-profile/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/agent-team-profile/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-browser-use-stagehand-native": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-stagehand-native/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-browser-use-stagehand-native/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-stagehand-native/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-stagehand-native/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-worktree": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/worktree/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-worktree/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/worktree/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/worktree/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-computer-use-cua-driver-mcp": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/computer-use-cua-driver-mcp/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-computer-use-cua-driver-mcp/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/computer-use-cua-driver-mcp/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/computer-use-cua-driver-mcp/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-ptc-runtime-python": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/ptc-runtime-python/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-ptc-runtime-python/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/ptc-runtime-python/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/ptc-runtime-python/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-badge-skill-bundle": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/badge-skill-bundle/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-badge-skill-bundle/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/badge-skill-bundle/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/badge-skill-bundle/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-voice-input": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-voice-input/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-voice-input/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-voice-input/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-voice-input/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-voice-input/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-voice-input/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-ralph-bundle": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/ralph-bundle/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-ralph-bundle/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/ralph-bundle/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/ralph-bundle/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-agent-team": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/agent-team/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-agent-team/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/agent-team/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/agent-team/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-ralph": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-ralph/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-ralph/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-ralph/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-ralph/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-translator": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/translator/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-translator/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/translator/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/translator/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-claude-code-mods": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/claude-code-mods/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-claude-code-mods/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/claude-code-mods/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/claude-code-mods/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-tool-agent-team": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-agent-team/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-tool-agent-team/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-agent-team/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-agent-team/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-agent-team": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-agent-team/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-agent-team/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-agent-team/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-agent-team/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-agent-team/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-agent-team/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-hooks-claude-code": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/hooks-claude-code/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-hooks-claude-code/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/hooks-claude-code/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/hooks-claude-code/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-auto-review": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/auto-review/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-auto-review/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/auto-review/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/auto-review/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-webworker-packer": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webworker-packer/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-webworker-packer/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webworker-packer/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/webworker-packer/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-speech-to-text-sensevoice": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/speech-to-text-sensevoice/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-speech-to-text-sensevoice/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/speech-to-text-sensevoice/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/speech-to-text-sensevoice/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-claude-code-mods": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-claude-code-mods/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-claude-code-mods/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-claude-code-mods/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-claude-code-mods/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-client-ui-claude-code-mods/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/client-ui-claude-code-mods/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-hooks-codex": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/hooks-codex/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-hooks-codex/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/hooks-codex/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/hooks-codex/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-voice-input-bundle": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/voice-input-bundle/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-voice-input-bundle/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/voice-input-bundle/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/voice-input-bundle/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-session-search": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-search/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-session-search/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-search/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/session-search/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-tool-worktree": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-worktree/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-tool-worktree/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-worktree/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-worktree/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-api-speech-to-text": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/api-speech-to-text/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-api-speech-to-text/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/api-speech-to-text/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/api-speech-to-text/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-browser-use-playwright-mcp": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-playwright-mcp/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-experimental-browser-use-playwright-mcp/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-playwright-mcp/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/browser-use-playwright-mcp/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-terminal": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-terminal/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-terminal/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-terminal/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/tool-terminal/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-hook-protocol": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/hook-protocol/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-hook-protocol/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/hook-protocol/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/experimental/hook-protocol/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-schedule": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/schedule/schedule/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-schedule/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/schedule/schedule/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/schedule/schedule/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-schedule": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/schedule/tool-schedule/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-schedule/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/schedule/tool-schedule/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/schedule/tool-schedule/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-deepseek-llm-api-extensions": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/deepseek-llm-api-extensions/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-deepseek-llm-api-extensions/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/deepseek-llm-api-extensions/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/deepseek-llm-api-extensions/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-retry": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-retry/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-retry/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-retry/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-retry/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-deepseek-account": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-deepseek-account/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-deepseek-account/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-deepseek-account/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-deepseek-account/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-token-meter": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/token-meter/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-token-meter/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/token-meter/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/token-meter/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-pi-ai": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-pi-ai/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-pi-ai/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-pi-ai/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-pi-ai/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-package-inventory-deepseek": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/plugin-package-inventory-deepseek/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-package-inventory-deepseek/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/plugin-package-inventory-deepseek/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/plugin-package-inventory-deepseek/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-deepseek-api-key": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-deepseek-api-key/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-deepseek-api-key/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-deepseek-api-key/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-deepseek-api-key/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-deepseek": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-deepseek/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-deepseek/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-deepseek/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/llm/llm-deepseek/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tmux-context": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/tmux-context/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tmux-context/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/tmux-context/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/tmux-context/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-file-reference": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/file-reference/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-file-reference/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/file-reference/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/file-reference/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-instructions": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/agent-instructions/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-instructions/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/agent-instructions/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/agent-instructions/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-file-reference-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/file-reference-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-file-reference-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/file-reference-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/file-reference-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-time-context": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/time-context/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-time-context/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/time-context/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/time-context/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-reference": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/session-reference/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-reference/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/session-reference/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/context/session-reference/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-loop": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent-loop/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-loop/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent-loop/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent-loop/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tools": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/tools/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tools/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/tools/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/tools/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-system-prompt": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/system-prompt/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-system-prompt/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/system-prompt/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/system-prompt/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-tool-presentation": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent-tool-presentation/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-tool-presentation/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent-tool-presentation/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent-tool-presentation/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-scope": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/scope/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-scope/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/scope/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/scope/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-default-model": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent-default-model/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-default-model/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent-default-model/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/core/agent-default-model/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-directory-picker-native": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker-native/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-directory-picker-native/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker-native/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker-native/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-memory": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/memory/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-memory/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/memory/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/memory/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-plugin-inventory": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/plugin-inventory/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-plugin-inventory/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/plugin-inventory/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/plugin-inventory/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-product-telemetry-otel": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/product-telemetry-otel/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-product-telemetry-otel/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/product-telemetry-otel/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/product-telemetry-otel/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-frontend-static": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/frontend-static/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-frontend-static/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/frontend-static/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/frontend-static/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-webserver": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/webserver/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-webserver/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/webserver/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/webserver/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-open-in-app": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/open-in-app/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-open-in-app/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/open-in-app/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/open-in-app/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-directory-picker-auto": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker-auto/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-directory-picker-auto/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker-auto/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker-auto/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-obsidian-kb": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/obsidian-kb/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-obsidian-kb/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/obsidian-kb/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/obsidian-kb/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-directory-picker": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-directory-picker/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-directory-picker-browse": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker-browse/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-host-directory-picker-browse/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker-browse/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/host/directory-picker-browse/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-manager": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/plugin-manager/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-plugin-manager/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/plugin-manager/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/plugin-manager/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-config-editor": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/config-editor/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-config-editor/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/config-editor/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/config-editor/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-hmr": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/hmr/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-hmr/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/hmr/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/hmr/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-cmdline": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/cmdline/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-cmdline/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/cmdline/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/cmdline/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-app-boot": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/app-boot/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-app-boot/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/app-boot/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/boot/app-boot/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-anonymous-user-id": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/identity/anonymous-user-id/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-anonymous-user-id/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/identity/anonymous-user-id/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/identity/anonymous-user-id/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-skill-filesystem": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/skill-filesystem/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-skill-filesystem/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/skill-filesystem/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/skill-filesystem/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-skill": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/tool-skill/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-skill/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/tool-skill/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/tool-skill/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-skill": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/skill/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-skill/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/skill/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/skill/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-skill-office": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/skill-office/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-skill-office/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/skill-office/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/skill-office/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-workspace-dependencies": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/tool-workspace-dependencies/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-workspace-dependencies/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/tool-workspace-dependencies/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/skill/tool-workspace-dependencies/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-lazy-require": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/lazy-require/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-lazy-require/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/lazy-require/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/lazy-require/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-chunked-list": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/chunked-list/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-chunked-list/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/chunked-list/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/chunked-list/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-crypto": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/crypto/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-crypto/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/crypto/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/crypto/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-home-paths": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/home-paths/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-home-paths/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/home-paths/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/home-paths/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-brand": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/brand/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-brand/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/brand/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/brand/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-launch-environment": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/launch-environment/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-launch-environment/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/launch-environment/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/launch-environment/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-timeout": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/timeout/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-timeout/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/timeout/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/timeout/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-values": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/values/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-values/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/values/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/values/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-time": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/time/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-time/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/time/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/time/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-deque": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/deque/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-deque/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/deque/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/deque/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-output-retention": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/output-retention/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-output-retention/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/output-retention/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/output-retention/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-code-language": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/code-language/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-code-language/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/code-language/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/code-language/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-workspace-path": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/workspace-path/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-util-workspace-path/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/workspace-path/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/workspace-path/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-atomic-write": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/atomic-write/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-atomic-write/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/atomic-write/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/atomic-write/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-http-proxy": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/http-proxy/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-http-proxy/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/http-proxy/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/http-proxy/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-package-manifest": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/package-manifest/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-package-manifest/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/package-manifest/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/package-manifest/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-native-command": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/native-command/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-native-command/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/native-command/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/util/native-command/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-preset": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/preset/agent-preset/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-preset/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/preset/agent-preset/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/preset/agent-preset/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-persona": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/preset/persona/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-persona/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/preset/persona/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/preset/persona/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-preset-registry": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/preset/agent-preset-registry/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-preset-registry/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/preset/agent-preset-registry/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/preset/agent-preset-registry/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-shell-env": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/shell-env/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-shell-env/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/shell-env/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/shell-env/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-pwsh-sandbox": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/pwsh-sandbox/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-pwsh-sandbox/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/pwsh-sandbox/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/pwsh-sandbox/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-shell": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/shell/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-shell/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/shell/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/shell/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-bash-sandbox": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/bash-sandbox/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-bash-sandbox/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/bash-sandbox/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/bash-sandbox/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-bash-persistent": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-bash-persistent/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-bash-persistent/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-bash-persistent/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-bash-persistent/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-bash": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-bash/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-bash/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-bash/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-bash/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-pwsh-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/pwsh-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-pwsh-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/pwsh-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/pwsh-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-bash-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/bash-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-bash-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/bash-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/bash-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-pwsh": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-pwsh/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-pwsh/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-pwsh/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-pwsh/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-pwsh-persistent": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-pwsh-persistent/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-pwsh-persistent/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-pwsh-persistent/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/shell/tool-pwsh-persistent/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-plan-mode": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/plan/plan-mode/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-plan-mode/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/plan/plan-mode/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/plan/plan-mode/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-zai": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-zai/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-zai/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-zai/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-zai/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-doubao": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-doubao/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-doubao/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-doubao/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-doubao/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-perplexity": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-perplexity/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-perplexity/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-perplexity/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-perplexity/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-deepseek": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-deepseek/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-deepseek/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-deepseek/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-deepseek/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-fetch-http": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-fetch-http/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-fetch-http/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-fetch-http/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-fetch-http/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-exa": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-exa/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-search-exa/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-exa/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/web-search-exa/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-web": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/tool-web/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-web/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/tool-web/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/web/tool-web/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-typert-protocol": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/protocol/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-typert-protocol/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/protocol/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/protocol/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-typert-generator": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/generator/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-typert-generator/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/generator/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/generator/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-typert-loader": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/loader/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-typert-loader/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/loader/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/loader/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-typert-registry": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/registry/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-typert-registry/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/registry/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/registry/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-typert-registry/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/typert/registry/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-attachment": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/attachment/attachment/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-attachment/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/attachment/attachment/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/attachment/attachment/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-attachment-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/attachment/attachment-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-attachment-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/attachment/attachment-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/attachment/attachment-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-workspace": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workspace/workspace/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-workspace/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workspace/workspace/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workspace/workspace/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-terminal-bash": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/terminal/terminal-bash/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-terminal-bash/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/terminal/terminal-bash/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/terminal/terminal-bash/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-terminal": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/terminal/terminal/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-terminal/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/terminal/terminal/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/terminal/terminal/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-compaction": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-compaction/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-command-compact": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/command-compact/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-command-compact/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/command-compact/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/command-compact/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-compaction-tool-result-pruner": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction-tool-result-pruner/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-compaction-tool-result-pruner/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction-tool-result-pruner/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction-tool-result-pruner/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-compaction-image-offload": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction-image-offload/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-compaction-image-offload/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction-image-offload/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction-image-offload/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-compaction-basic": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction-basic/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-compaction-basic/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction-basic/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/compaction/compaction-basic/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-app": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/web-app/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-web-app/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/web-app/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/web-app/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-minimal": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/sdk-minimal/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-minimal/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/sdk-minimal/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/sdk-minimal/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-headless": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/headless/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-headless/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/headless/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/headless/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-app": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/sdk-app/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-app/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/sdk-app/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/sdk-app/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-acp-app": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/acp-app/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-acp-app/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/acp-app/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/acp-app/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-base": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/base/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-base/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/base/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/bundle/base/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-lsp-stdio": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/lsp/lsp-stdio/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-lsp-stdio/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/lsp/lsp-stdio/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/lsp/lsp-stdio/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-lsp": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/lsp/lsp/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-lsp/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/lsp/lsp/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/lsp/lsp/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-lsp": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/lsp/tool-lsp/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-lsp/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/lsp/tool-lsp/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/lsp/tool-lsp/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-mcp-resources": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/mcp/mcp-resources/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-mcp-resources/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/mcp/mcp-resources/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/mcp/mcp-resources/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-mcp-client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/mcp/mcp-client/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-mcp-client/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/mcp/mcp-client/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/mcp/mcp-client/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-office-to-pdf": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/document/office-to-pdf/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-office-to-pdf/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/document/office-to-pdf/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/document/office-to-pdf/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-command-feedback": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/feedback/command-feedback/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-command-feedback/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/feedback/command-feedback/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/feedback/command-feedback/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-message-feedback": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/feedback/message-feedback/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-message-feedback/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/feedback/message-feedback/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/feedback/message-feedback/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-storage-domain": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage-domain/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-storage-domain/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage-domain/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage-domain/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-storage": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-storage/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-storage-sqlite": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage-sqlite/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-storage-sqlite/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage-sqlite/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage-sqlite/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-storage-json": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage-json/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-storage-json/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage-json/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/storage/storage-json/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-cordis-host-runner": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/cordis-host-runner/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-cordis-host-runner/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/cordis-host-runner/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/cordis-host-runner/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-cordis": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/tool-cordis/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-cordis/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/tool-cordis/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/tool-cordis/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-cordis-client-runner": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/cordis-client-runner/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-cordis-client-runner/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/cordis-client-runner/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/cordis-client-runner/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-cordis-client-runner/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/cordis-client-runner/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-cordis": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/ui-cordis/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-cordis/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/ui-cordis/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/ui-cordis/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-cordis/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/extensions/ui-cordis/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-todo": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/todo/tool-todo/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-todo/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/todo/tool-todo/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/todo/tool-todo/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-win32-process": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subprocess/win32-process/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-win32-process/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subprocess/win32-process/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subprocess/win32-process/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subprocess": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subprocess/subprocess/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subprocess/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subprocess/subprocess/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subprocess/subprocess/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subprocess-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subprocess/subprocess-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subprocess-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subprocess/subprocess-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subprocess/subprocess-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-workspace-changes": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/deliverables/workspace-changes/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-workspace-changes/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/deliverables/workspace-changes/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/deliverables/workspace-changes/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-present": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/deliverables/tool-present/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-present/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/deliverables/tool-present/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/deliverables/tool-present/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs-ssh": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/fs-ssh/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs-ssh/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/fs-ssh/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/fs-ssh/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subprocess-ssh": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/subprocess-ssh/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subprocess-ssh/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/subprocess-ssh/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/subprocess-ssh/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-ssh-helper-runtime": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/ssh-helper-runtime/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-ssh-helper-runtime/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/ssh-helper-runtime/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/ssh-helper-runtime/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox-ssh": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/sandbox-ssh/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox-ssh/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/sandbox-ssh/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/sandbox-ssh/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-ssh": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/ssh/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-ssh/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/ssh/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ssh/ssh/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox-policy": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox-policy/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox-policy/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox-policy/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox-policy/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox-windows-acl": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox-windows-acl/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox-windows-acl/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox-windows-acl/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox-windows-acl/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sandbox-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sandbox/sandbox-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-log-export": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-log-export/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-log-export/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-log-export/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-log-export/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-log-export/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-log-export/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-query": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-query/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-query/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-query/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-query/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-query-sqlite": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-query-sqlite/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-query-sqlite/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-query-sqlite/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session-query/session-query-sqlite/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-jsonrpc-server": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sdk/server/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-jsonrpc-server/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sdk/server/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sdk/server/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-protocol": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sdk/protocol/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-protocol/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sdk/protocol/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sdk/protocol/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sdk/client/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-sdk-client/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sdk/client/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/sdk/client/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-workflow": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workflow/tool-workflow/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-workflow/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workflow/tool-workflow/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workflow/tool-workflow/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-workflow-ptc": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workflow/workflow-ptc/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-workflow-ptc/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workflow/workflow-ptc/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workflow/workflow-ptc/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-workflow": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workflow/workflow/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-workflow/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workflow/workflow/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/workflow/workflow/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-ptc-runtime-node": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ptc-runtime/ptc-runtime-node/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-ptc-runtime-node/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ptc-runtime/ptc-runtime-node/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ptc-runtime/ptc-runtime-node/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-ptc-runtime": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ptc-runtime/ptc-runtime/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-ptc-runtime/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ptc-runtime/ptc-runtime/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/ptc-runtime/ptc-runtime/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-session-controller": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/session-controller/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-session-controller/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/session-controller/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/session-controller/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-session-controller/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/session-controller/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-job-controller": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/job-controller/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-job-controller/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/job-controller/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/job-controller/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-job-controller/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/job-controller/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-remotes": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/remotes/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-remotes/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/remotes/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/remotes/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-remotes/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/remotes/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-workspace-files": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/workspace-files/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-workspace-files/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/workspace-files/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/workspace-files/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-workspace-files/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/workspace-files/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-terminal-controller": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/terminal-controller/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-terminal-controller/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/terminal-controller/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/terminal-controller/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-terminal-controller/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/terminal-controller/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-workspace-controller": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/workspace-controller/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-workspace-controller/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/workspace-controller/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/workspace-controller/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-workspace-controller/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/workspace-controller/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-settings-controller": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/settings-controller/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-settings-controller/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/settings-controller/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/settings-controller/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-gateway": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/gateway/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-gateway/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/gateway/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/gateway/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-gateway/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/gateway/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-account-controller": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/account-controller/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-api-account-controller/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/account-controller/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/api/account-controller/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-otel": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/telemetry/otel/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-otel/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/telemetry/otel/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/telemetry/otel/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-loader-smoke": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/loader-smoke/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-loader-smoke/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/loader-smoke/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/loader-smoke/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-snapshot": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/session-snapshot/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-snapshot/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/session-snapshot/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/session-snapshot/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-remote-mock": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/remote-mock/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-remote-mock/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/remote-mock/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/remote-mock/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-test-runtime": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/client-runtime/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-test-runtime/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/client-runtime/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/client-runtime/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-replay": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/llm-replay/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-replay/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/llm-replay/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/llm-replay/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-mock-server": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/llm-mock-server/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-llm-mock-server/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/llm-mock-server/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/llm-mock-server/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-loop-testkit": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/agent-loop-testkit/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-agent-loop-testkit/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/agent-loop-testkit/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/test-support/agent-loop-testkit/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-jobs-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/jobs/jobs-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-jobs-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/jobs/jobs-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/jobs/jobs-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-jobs": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/jobs/tool-jobs/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-jobs/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/jobs/tool-jobs/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/jobs/tool-jobs/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-jobs": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/jobs/jobs/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-jobs/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/jobs/jobs/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/jobs/jobs/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-call-timeout-policy": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/guard/timeout-policy/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-call-timeout-policy/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/guard/timeout-policy/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/guard/timeout-policy/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-repeat-tool-reminder": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/guard/repeat-tool-reminder/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-repeat-tool-reminder/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/guard/repeat-tool-reminder/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/guard/repeat-tool-reminder/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-computer-use": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/computer-use/computer-use/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-computer-use/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/computer-use/computer-use/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/computer-use/computer-use/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-browser-use": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/browser-use/browser-use/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-browser-use/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/browser-use/browser-use/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/browser-use/browser-use/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-spill-policy": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/spill/spill-policy/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-spill-policy/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/spill/spill-policy/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/spill/spill-policy/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-spill-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/spill/spill-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-spill-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/spill/spill-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/spill/spill-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-spill": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/spill/spill/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-spill/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/spill/spill/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/spill/spill/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs-observation-policy": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs-observation-policy/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs-observation-policy/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs-observation-policy/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs-observation-policy/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-fs": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/tool-fs/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-fs/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/tool-fs/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/tool-fs/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs-sandbox": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs-sandbox/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs-sandbox/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs-sandbox/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs-sandbox/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-fs-search": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/tool-fs-search/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-fs-search/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/tool-fs-search/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/tool-fs-search/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-fs/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/fs/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-str-replace-editor": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/tool-str-replace-editor/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-str-replace-editor/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/tool-str-replace-editor/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/fs/tool-str-replace-editor/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-acp": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/acp/acp/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-acp/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/acp/acp/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/acp/acp/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-documentpreview": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-documentpreview/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-documentpreview/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-documentpreview/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-documentpreview/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-documentpreview/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-documentpreview/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-open-in-app": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-open-in-app/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-open-in-app/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-open-in-app/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-open-in-app/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-open-in-app/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-open-in-app/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-terminal": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-terminal/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-terminal/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-terminal/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-terminal/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-terminal/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-terminal/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-account": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-account/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-account/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-account/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-account/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-account/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-account/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-theme": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-theme/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-theme/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-theme/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-theme/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-theme/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-theme/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-reference": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-reference/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-reference/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-reference/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-reference/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-reference/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-reference/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-connection": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/connection/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-connection/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/connection/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/connection/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-connection/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/connection/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-shell": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-shell/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-shell/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-shell/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-shell/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-shell/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-shell/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-chat": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-chat/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-chat/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-chat/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-chat/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-chat/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-chat/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-obsidian-kb": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-obsidian-kb/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-obsidian-kb/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-obsidian-kb/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-obsidian-kb/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-obsidian-kb/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-obsidian-kb/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-directory-picker-browse": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-directory-picker-browse/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-directory-picker-browse/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-directory-picker-browse/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-directory-picker-browse/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-directory-picker-browse/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-directory-picker-browse/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-model-selection": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-model-selection/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-model-selection/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-model-selection/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-model-selection/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-model-selection/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-model-selection/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-plan": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-plan/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-plan/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-plan/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-plan/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-plan/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-plan/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-layout": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-layout/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-layout/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-layout/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-layout/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-layout/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-layout/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-web": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/web/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-web/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/web/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/web/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-hmr": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/hmr/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-hmr/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/hmr/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/hmr/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-hmr/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/hmr/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-primitives": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-primitives/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-primitives/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-primitives/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-primitives/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-files": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-files/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-files/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-files/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-files/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-files/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-files/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-resources": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/resources/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-resources/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/resources/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/resources/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-resources/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/resources/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-trajectory": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-trajectory/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-trajectory/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-trajectory/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-trajectory/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-trajectory/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-trajectory/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-input-trigger": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-input-trigger/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-input-trigger/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-input-trigger/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-input-trigger/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-input-trigger/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-input-trigger/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-shortcuts": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-shortcuts/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-shortcuts/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-shortcuts/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-shortcuts/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-shortcuts/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-shortcuts/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-product-analytics": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/product-analytics/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-product-analytics/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/product-analytics/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/product-analytics/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-product-analytics/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/product-analytics/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-agent-loop": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-agent-loop/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-agent-loop/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-agent-loop/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-agent-loop/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-agent-loop/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-agent-loop/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-schedule": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-schedule/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-schedule/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-schedule/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-schedule/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-schedule/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-schedule/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-dockkit": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-dockkit/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-dockkit/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-dockkit/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-dockkit/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-attachment": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-attachment/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-attachment/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-attachment/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-attachment/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-attachment/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-attachment/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-subagent": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-subagent/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-subagent/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-subagent/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-subagent/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-subagent/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-subagent/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-workspace": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-workspace/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-workspace/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-workspace/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-workspace/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-workspace/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-workspace/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-plugins": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-plugins/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-plugins/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-plugins/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-plugins/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-plugins/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-plugins/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-general": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-general/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-general/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-general/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-general/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-general/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-general/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-subagent": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-subagent/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-subagent/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-subagent/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-subagent/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-subagent/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-subagent/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-plugin-inventory": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-plugin-inventory/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-plugin-inventory/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-plugin-inventory/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-plugin-inventory/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-plugin-inventory/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-plugin-inventory/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-approval": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-approval/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-approval/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-approval/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-approval/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-approval/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-approval/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-commands": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-commands/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-commands/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-commands/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-commands/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-commands/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-commands/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-permission-presets": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-permission-presets/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-permission-presets/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-permission-presets/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-permission-presets/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-permission-presets/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-permission-presets/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-web-search-config": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-web-search-config/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-web-search-config/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-web-search-config/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-web-search-config/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-web-search-config/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-web-search-config/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-file-upload": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/file-upload/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-file-upload/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/file-upload/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/file-upload/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-file-upload/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/file-upload/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-plugin-manager": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-plugin-manager/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-plugin-manager/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-plugin-manager/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-plugin-manager/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-plugin-manager/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-plugin-manager/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-shortcuts": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/shortcuts/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-shortcuts/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/shortcuts/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/shortcuts/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-shortcuts/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/shortcuts/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-skill": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-skill/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-skill/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-skill/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-skill/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-skill/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-skill/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-web-search": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-web-search/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-web-search/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-web-search/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-web-search/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-web-search/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-web-search/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-directory-picker-native": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-directory-picker-native/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-directory-picker-native/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-directory-picker-native/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-directory-picker-native/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-directory-picker-native/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-directory-picker-native/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-agent-preset": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-agent-preset/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-agent-preset/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-agent-preset/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-agent-preset/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-agent-preset/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-agent-preset/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-workflow-run": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-workflow-run/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-workflow-run/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-workflow-run/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-workflow-run/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-workflow-run/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-workflow-run/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-models": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-models/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-models/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-models/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-models/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-models/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-models/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-modules": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/modules/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-modules/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/modules/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/modules/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-modules/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/modules/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-jobs": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-jobs/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-jobs/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-jobs/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-jobs/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-jobs/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-jobs/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-user-questions": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-user-questions/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-user-questions/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-user-questions/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-user-questions/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-user-questions/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-user-questions/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-brand-official": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-brand-official/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-brand-official/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-brand-official/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-brand-official/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-brand-official/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-brand-official/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-browser": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-browser/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-browser/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-browser/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-browser/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-sidebar-browser/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-sidebar-browser/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-message-feedback": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-message-feedback/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-message-feedback/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-message-feedback/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-message-feedback/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-message-feedback/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-message-feedback/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-session-log": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-session-log/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-session-log/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-session-log/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-session-log/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-settings-session-log/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-settings-session-log/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-deliverables": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-deliverables/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-deliverables/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-deliverables/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-deliverables/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-deliverables/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-deliverables/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-store": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/store/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-store/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/store/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/store/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-tool": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-tool/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-tool/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-tool/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-tool/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-tool/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-tool/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-goal": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-goal/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-goal/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-goal/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-goal/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-client-ui-goal/client": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/client/ui-goal/lib/types/client/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-permission-presets": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/permission-presets/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-permission-presets/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/permission-presets/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/permission-presets/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-user-questions": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/user-questions/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-user-questions/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/user-questions/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/user-questions/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-commands": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/commands/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-commands/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/commands/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/commands/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-user-approval": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/user-approval/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-user-approval/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/user-approval/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/user-approval/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-ask-user": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/tool-ask-user/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-ask-user/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/tool-ask-user/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/interaction/tool-ask-user/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-acp": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-acp/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-acp/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-acp/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-acp/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-fork-in-process": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-fork-in-process/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-fork-in-process/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-fork-in-process/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-fork-in-process/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-subagent-control": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/tool-subagent-control/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-subagent-control/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/tool-subagent-control/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/tool-subagent-control/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-spawn-in-process": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-spawn-in-process/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-spawn-in-process/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-spawn-in-process/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-spawn-in-process/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-subagent": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/tool-subagent/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-subagent/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/tool-subagent/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/tool-subagent/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-claude-code": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-claude-code/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-claude-code/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-claude-code/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-claude-code/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-codex": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-codex/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-codex/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-codex/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-codex/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-dsh-sdk": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-dsh-sdk/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-subagent-dsh-sdk/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-dsh-sdk/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/subagent/subagent-dsh-sdk/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-goal": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/tool-goal/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-goal/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/tool-goal/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/tool-goal/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-goal-round-driver": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/goal-round-driver/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-goal-round-driver/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/goal-round-driver/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/goal-round-driver/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-command-goal": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/command-goal/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-command-goal/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/command-goal/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/command-goal/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-goal": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/goal/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-goal/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/goal/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/goal/goal/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-credentials-local": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/credentials-local/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-credentials-local/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/credentials-local/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/credentials-local/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-deepseek-account-platform": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/deepseek-account-platform/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-deepseek-account-platform/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/deepseek-account-platform/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/deepseek-account-platform/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-deepseek-account": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/deepseek-account/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-deepseek-account/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/deepseek-account/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/deepseek-account/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-authorization": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/authorization/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-authorization/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/authorization/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/authorization/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-credentials": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/credentials/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-credentials/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/credentials/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/credentials/credentials/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-working-directory": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/tool-working-directory/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-tool-working-directory/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/tool-working-directory/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/tool-working-directory/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-v1-to-v2": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v1-to-v2/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-v1-to-v2/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v1-to-v2/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v1-to-v2/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-v3-to-v4": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v3-to-v4/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-v3-to-v4/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v3-to-v4/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v3-to-v4/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-title": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-title/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-title/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-title/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-title/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-projection-cache": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-projection-cache/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-projection-cache/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-projection-cache/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-projection-cache/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-v2-to-v3": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v2-to-v3/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-v2-to-v3/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v2-to-v3/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v2-to-v3/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-working-directory": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/working-directory/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-working-directory/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/working-directory/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/working-directory/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-checkpoint-policy": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-checkpoint-policy/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-checkpoint-policy/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-checkpoint-policy/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-checkpoint-policy/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-log-deepseek": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-log-deepseek/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-log-deepseek/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-log-deepseek/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-log-deepseek/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-title-llm": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-title-llm/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-title-llm/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-title-llm/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-title-llm/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-stats": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-stats/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-stats/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-stats/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-stats/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-telemetry-otel": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-telemetry-otel/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-telemetry-otel/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-telemetry-otel/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-telemetry-otel/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-title-first-prompt-llm": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-title-first-prompt-llm/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-title-first-prompt-llm/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-title-first-prompt-llm/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-title-first-prompt-llm/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-persistence-jsonl": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-persistence-jsonl/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-persistence-jsonl/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-persistence-jsonl/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-persistence-jsonl/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-catalog": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-catalog/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-catalog/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-catalog/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-catalog/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-telemetry": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-telemetry/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-telemetry/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-telemetry/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-telemetry/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-turn-outline": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-turn-outline/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-turn-outline/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-turn-outline/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-turn-outline/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-v0-to-v1": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v0-to-v1/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format-v0-to-v1/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v0-to-v1/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format-v0-to-v1/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-format/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-format/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-persistence": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-persistence/lib/types/index.d.ts"
+      ],
+      "@deepseek-ai/dsh-session-persistence/*": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-persistence/lib/types/*.d.ts",
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/packages/session/session-persistence/lib/types/*/index.d.ts"
+      ],
+      "@deepseek-ai/cordis-plugin-include": [
+        "../../dsh-upgrades/upgrade-0.2.1-alpha.2/vendor/include/lib/types/index.d.ts"
+      ]
+    },
+    "jsx": "react-jsx",
+    "typeRoots": [
+      "../../dsh-upgrades/upgrade-0.2.1-alpha.2/node_modules/.pnpm/@types+react@18.3.31/node_modules/@types",
+      "../../dsh-upgrades/upgrade-0.2.1-alpha.2/node_modules/@types"
+    ]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": [
+    "src"
+  ]
 }

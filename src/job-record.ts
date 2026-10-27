@@ -1,0 +1,9 @@
+import {z} from 'zod'
+import {reviewerSelectionSchema} from './reviewer-wire.ts'
+import {pluginRecordOf,type SessionEvent} from '@deepseek-ai/dsh-session'
+import type {JobState} from './wire.ts'
+const fileSchema=z.object({path:z.string(),type:z.enum(['file','directory','symlink']),hash:z.string(),bytes:z.number()})
+const acceptanceSchema=z.object({jobId:z.string(),taskId:z.string(),at:z.number(),fingerprint:z.string(),result:z.string(),evidenceIds:z.array(z.string()),score:z.number(),paths:z.array(z.string()),files:z.array(fileSchema)})
+export const jobSchema:z.ZodType<JobState>=z.object({reviewer:reviewerSelectionSchema.nullable().default(null),resolvedReviewerModel:z.string().nullable().default(null),resumeRequested:z.boolean().default(false),mode:z.enum(['ordinary','long']),jobId:z.string().nullable(),cwd:z.string(),phase:z.enum(['idle','active','paused','blocked','done','ended']),reason:z.string(),startedAt:z.number(),elapsedMs:z.number(),activeSince:z.number(),threshold:z.number(),inputTokens:z.number().default(0),outputTokens:z.number().default(0),usageUnknown:z.boolean().default(false),toolCalls:z.number(),assessments:z.number(),noProgress:z.number(),lastProgress:z.string(),acceptances:z.array(acceptanceSchema),changes:z.array(z.object({taskId:z.string(),paths:z.array(z.string()),reason:z.string()})),revalidating:z.array(z.string()),pendingCalls:z.array(z.string()),history:z.array(z.object({jobId:z.string(),phase:z.string(),at:z.number()}))})
+
+export function readJobRecord(event:SessionEvent):JobState|undefined{const r=pluginRecordOf(event);if(r?.type!=='plugin:long-task/state')return;const parsed=jobSchema.safeParse(r.data);return parsed.success?parsed.data:undefined}

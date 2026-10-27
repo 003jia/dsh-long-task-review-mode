@@ -3,3 +3,7 @@ node_modules/
 *.tsbuildinfo
 .DS_Store
 pi-claude-modes/.backups/
+
+test-results/
+tsconfig.generated.json
+*.tgz
