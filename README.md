@@ -1,6 +1,6 @@
 # dsh-长任务自主审查模式
 
-将 Claude Loop 执行协调、本地 Laya / 云端 Jev 验收、设置页与进度侧栏合为一个 DSH 插件。目标运行时：**DSH 0.2.1-rc.3**。当前插件版本：**0.2.1**。
+将 Claude Loop 执行协调、本地 Laya / 云端 Jev 验收、设置页与进度侧栏合为一个 DSH 插件。目标运行时：**DSH 0.2.1-rc.3**。当前插件版本：**0.2.2**。
 
 在新建会话的原生模式菜单中选择 **长任务模式**，与标准、PTC、极简、创造模式并列。默认模式不变，首次发送任务才启动；普通会话不显示额外选择条。
 
@@ -8,22 +8,30 @@
 
 ```mermaid
 flowchart TD
-  A[用户选择长任务模式并提交需求] --> B[主模型生成规定格式的 plan.md]
-  B --> C{计划格式有效?}
-  C -- 否 --> B
-  C -- 是 --> D[执行当前任务并提交结果与证据]
-  D --> E[本地 Laya 或云端 Jev 按计划验收当前项]
-  E --> F{通过?}
-  F -- 否 --> G[修复当前项或按异常规则暂停]
-  G --> D
-  F -- 是 --> H[追加通过记录并锁定结果与证据]
-  H --> I{所有项通过?}
-  I -- 否 --> D
-  I -- 是 --> J[依据原始需求和整体目标总体验收]
-  J --> K{整体通过?}
-  K -- 否 --> L[有真实缺口证据时仅定位受影响项复验]
-  L --> D
-  K -- 是 --> M[输出最终结果与逐项及整体评估]
+  A[用户选择长任务模式并提交需求] --> B{主模型判断是否为代码任务}
+  B -- 否 --> N[正常分析与按需调用工具]
+  N --> O[输出答案]
+  B -- 是 --> C[主模型分析代码需求]
+  C --> D{用户是否开启独立验收}
+  D -- 否 --> P[制定普通任务计划]
+  P --> Q[执行任务与主模型自检]
+  Q --> R{是否完成}
+  R -- 否 --> Q
+  R -- 是 --> S[输出结果并标明主模型自检]
+  D -- 是 --> E[生成固定格式 plan.md 并校验]
+  E --> F[执行当前任务并提交结果与证据]
+  F --> G[Laya 或 Jev 按计划验收当前项]
+  G --> H{本项通过}
+  H -- 否 --> I[修复当前项或按异常规则暂停]
+  I --> F
+  H -- 是 --> J[记录本项分数与状态并保留通过记录]
+  J --> K{所有项通过}
+  K -- 否 --> F
+  K -- 是 --> L[原始需求与整体目标验收]
+  L --> M{整体通过}
+  M -- 否 --> T[有真实缺口证据时定位受影响项复验]
+  T --> F
+  M -- 是 --> U[输出结果及逐项与整体评估]
 ```
 
 - `plan.md` 包含目标范围、固定任务编号与依赖、完成目标、验收标准、交付物/证据、异常和计划变更规则。
@@ -32,13 +40,15 @@ flowchart TD
 - 设置保留 Claude Loop 四个预设、工具调用项、循环参数与统计；提供本地 Laya 和云端 Jev 配置及样例校验。
 - Jev 使用 [TypeSafe System One](https://docs.typesafe.ai/api/system-one) 协议。密钥存入 DSH 凭据服务，普通配置只存引用；默认本地，不自动上传任务。选择云端后会发送该任务的需求、结果与证据。
 
+在设置 → 长任务模式 → 模型验收保存 **代码任务启用独立验收** 开关。默认开启以保留现有部署行为；仅对新任务生效。分流依据是“是否为代码任务”，不是简单/复杂程度。主模型负责分类，Host 根据用户开关选分支；不额外请求 Laya/Jev 做分类。非代码及关闭评估的分支不要求验收模型连接。已有任务继续原分流、后端与通过记录，不能通过改分类或 selfReview 绕过独立验收。
+
 ## 安装
 
-从 [Releases](https://github.com/003jia/dsh-long-task-review-mode/releases/latest) 下载 `deepseek-ai-dsh-long-task-0.2.1.tgz`，核对同页 SHA-256 后安装。先备份 profile，并等待运行中的任务结束再重启。
+从 [Releases](https://github.com/003jia/dsh-long-task-review-mode/releases/latest) 下载 `deepseek-ai-dsh-long-task-0.2.2.tgz`，核对同页 SHA-256 后安装。先备份 profile，并等待运行中的任务结束再重启。
 
 ```sh
 # 根据自己的部署选择 desktop 或 web；路径改为下载的绝对路径。
-dsh plugin --profile desktop add file:/absolute/path/deepseek-ai-dsh-long-task-0.2.1.tgz --config.auto-install-peers=false
+dsh plugin --profile desktop add file:/absolute/path/deepseek-ai-dsh-long-task-0.2.2.tgz --config.auto-install-peers=false
 ```
 
 包中已包含 Host/Client 产物，不需要安装时构建。DSH 共享框架由运行时提供，不要自动另装一套 Cordis。
@@ -53,7 +63,7 @@ dsh plugin --profile desktop add file:/absolute/path/deepseek-ai-dsh-long-task-0
 
 `node --test tests/*.test.mjs` 使用已安装的正式 DSH Loader、Agent、Gateway、压缩及 JSONL 持久化；macOS 默认从 `/Applications/DeepSeek Harness.app` 解析。其他部署可设置 `DSH_NODE`（支持 ASAR 的 Node/Electron 可执行文件）和 `DSH_RUNTIME`（含 desktop-runtime.json 的 DSH 运行时目录）。测试使用临时 profile，外部推理脚本化，不读取真实账号或发送真实云端评分。
 
-本次三组回归通过，包括七个通过记录保护、真实压缩后继续 T08、跨进程恢复、原生预设选择及 Jev HTTP 边界。正式桌面菜单与本地 Laya 样例已检查；**尚无真实 Jev 云端质量验收，也未完成真实八项任务整体通过验收**。CI 仅检查发布产物可解析/可打包，不能替代桌面和模型验收。
+本次四组回归通过，新增原生入口三分支、首条需求保留、连续非代码回合、开关快照及不可用服务分流，并覆盖七个通过记录保护、真实压缩后继续 T08、跨进程恢复、原生预设选择及 Jev HTTP 边界。正式桌面菜单与本地 Laya 样例已检查；**尚无真实 Jev 云端质量验收，也未完成真实八项任务整体通过验收**。CI 仅检查发布产物可解析/可打包，不能替代桌面和模型验收。
 
 ## 原仓库内容与许可证
 

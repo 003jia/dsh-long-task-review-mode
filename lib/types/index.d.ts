@@ -10,6 +10,7 @@ export type * from './panel/types.ts';
 export declare const name = "long-task";
 export declare const inject: string[];
 export interface Config {
+    independentReview: Volatile<boolean>;
     reviewer: Volatile<ReviewerSelection>;
     reviewerMaxInputBytes: number;
     reviewerMaxResponseBytes: number;
@@ -26,6 +27,7 @@ export interface Config {
     outputPerMillion: Volatile<number>;
 }
 export declare const Config: schema<Schemastery.ObjectS<NoInfer<{
+    independentReview: schema<boolean, boolean, "volatile-defined">;
     reviewer: schema<NoInfer<Schemastery.ObjectS<NoInfer<{
         backend: schema<"laya" | "jev", "laya" | "jev", "defined">;
         endpoint: schema<string, string, "defined">;
@@ -105,6 +107,7 @@ export declare const Config: schema<Schemastery.ObjectS<NoInfer<{
     maxAssessments: schema<number, number, "volatile-defined">;
     maxMinutes: schema<number, number, "volatile-defined">;
 }>>, Schemastery.ObjectT<NoInfer<{
+    independentReview: schema<boolean, boolean, "volatile-defined">;
     reviewer: schema<NoInfer<Schemastery.ObjectS<NoInfer<{
         backend: schema<"laya" | "jev", "laya" | "jev", "defined">;
         endpoint: schema<string, string, "defined">;

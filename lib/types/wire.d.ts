@@ -36,6 +36,9 @@ export declare const requestSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
 }, z.core.$strict>, z.ZodObject<{
     op: z.ZodLiteral<"settings">;
 }, z.core.$strict>, z.ZodObject<{
+    op: z.ZodLiteral<"saveReviewPolicy">;
+    enabled: z.ZodBoolean;
+}, z.core.$strict>, z.ZodObject<{
     op: z.ZodLiteral<"saveReviewer">;
     reviewer: z.ZodObject<{
         backend: z.ZodEnum<{
@@ -102,6 +105,10 @@ export interface Acceptance {
     files: FileRecord[];
 }
 export interface JobState {
+    route: 'pending' | 'coding' | 'non_coding';
+    routingReason: string;
+    reviewEnabled: boolean;
+    inputTurn: number | null;
     reviewer: ReviewerSelection | null;
     resolvedReviewerModel: string | null;
     resumeRequested: boolean;
@@ -144,6 +151,7 @@ export interface Snapshot {
         error: string | null;
     };
     settings: {
+        independentReview: boolean;
         maxModelTokens: number;
         maxCost: number;
         inputPerMillion: number;

@@ -1,4 +1,11 @@
 export declare const en: {
+    independentReview: string;
+    saveReviewPolicy: string;
+    routingHint: string;
+    routing: string;
+    nonCoding: string;
+    selfReview: string;
+    completedNormal: string;
     jobActions: string;
     claudeLoop: string;
     presetHint: string;

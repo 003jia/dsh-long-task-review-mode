@@ -14,7 +14,7 @@ import {capture,differences,hash} from './artifacts.ts'
 import type {} from '@deepseek-ai/dsh-session-projection'
 import type {} from '@deepseek-ai/dsh-agent-preset-registry'
 import {LONG_TASK_PRESET} from './mode-preset.ts'
-const empty=():JobState=>({reviewer:null,resolvedReviewerModel:null,resumeRequested:false,mode:'ordinary',jobId:null,cwd:'',phase:'idle',reason:'',startedAt:0,elapsedMs:0,activeSince:0,threshold:70,inputTokens:0,outputTokens:0,usageUnknown:false,toolCalls:0,assessments:0,noProgress:0,lastProgress:'',acceptances:[],changes:[],revalidating:[],pendingCalls:[],history:[]})
+const empty=():JobState=>({route:'pending',routingReason:'',reviewEnabled:true,inputTurn:null,reviewer:null,resolvedReviewerModel:null,resumeRequested:false,mode:'ordinary',jobId:null,cwd:'',phase:'idle',reason:'',startedAt:0,elapsedMs:0,activeSince:0,threshold:70,inputTokens:0,outputTokens:0,usageUnknown:false,toolCalls:0,assessments:0,noProgress:0,lastProgress:'',acceptances:[],changes:[],revalidating:[],pendingCalls:[],history:[]})
 declare module '@deepseek-ai/dsh-session-projection' {interface SessionProjectionStateMap {'long-task-job':JobState} interface SessionProjectionMap {'long-task-job':JobState}}
 declare module '@deepseek-ai/cordis' {interface Context {longTasks:LongTasks}}
 export class LongTasks extends TypertRemoteService {
@@ -27,7 +27,7 @@ export class LongTasks extends TypertRemoteService {
  constructor(ctx:Context,private config:Config){super(ctx,'longTasks')}
  async* [Service.init]():AsyncGenerator<()=>void,void,void>{
   yield ()=>{this.stopped.abort();for(const off of this.masks.values())off();this.masks.clear();this.turnJobs.clear()}
-  this.ctx.sessionProjections.register({key:'long-task-job',stateVersion:1,stateSchema:jobSchema,init:empty,
+  this.ctx.sessionProjections.register({key:'long-task-job',stateVersion:2,stateSchema:jobSchema,init:empty,
    apply(state,event):JobState{
     const record=readJobRecord(event)
     if(record)return record
@@ -50,7 +50,7 @@ export class LongTasks extends TypertRemoteService {
   this.ctx.on('agent/pre-step',async({agent,turn,signal},next)=>{
    let job=this.state(agent.session)
    const preset=this.ctx.get('agentPresets')?.composedPreset(agent.ctx)??agent.session.header.agentPreset
-   if(preset===LONG_TASK_PRESET&&!job.jobId&&agent.session.header.origin!=='subagent'){await this.request({op:'long',sessionId:agent.session.id});job=this.state(agent.session)}
+   if(preset===LONG_TASK_PRESET&&(!job.jobId||job.phase==='done'&&this.turnJobs.get(agent)?.turn!==turn)&&agent.session.header.origin!=='subagent'){await this.dispatch({op:'long',sessionId:agent.session.id},turn);job=this.state(agent.session)}
    const old=this.turnJobs.get(agent)
    if(job.mode==='long'&&job.resumeRequested&&['paused','blocked'].includes(job.phase)){await this.request({op:'resume',sessionId:agent.session.id});job=this.state(agent.session)}
    if(old?.turn===turn&&(job.phase!=='active'||job.jobId!==old.jobId||job.mode!=='long'))throw new Error('长任务已停止：'+job.reason)
@@ -58,7 +58,7 @@ export class LongTasks extends TypertRemoteService {
    if(on){this.masks.get(agent)?.();this.masks.delete(agent);this.turnJobs.set(agent,{turn,jobId:job.jobId!})
     const budget=this.budgetIssue(job);if(budget){this.pause(agent,budget);throw new Error(budget)}
     await this.before(agent,signal)
-   }else if(!this.masks.has(agent))this.masks.set(agent,agent.ctx.tools.restrict({deny:['loop_tasks','laya_tasks']}))
+   }else if(job.mode!=='long'&&preset!==LONG_TASK_PRESET&&!this.masks.has(agent))this.masks.set(agent,agent.ctx.tools.restrict({deny:['loop_tasks','laya_tasks']}))
    const decision=await next()
    if(decision.kind!=='reject'&&job.mode==='long'&&job.jobId&&['paused','blocked'].includes(job.phase)){
     const human=[...decision.messages].reverse().find(message=>message.source.kind==='user')
@@ -74,7 +74,8 @@ export class LongTasks extends TypertRemoteService {
   this.ctx.on('agent/disposed',({agent})=>{this.masks.get(agent)?.();this.masks.delete(agent);this.turnJobs.delete(agent)})
   this.ctx.on('system-prompt/assemble',async(_assembly,context,next)=>{
    const assembled=await next(),agent=context.agent
-   if(!agent||!this.active(agent))return {...assembled,tools:assembled.tools.filter(t=>!['loop_tasks','laya_tasks'].includes(t.name))}
+   const preset=agent?(this.ctx.get('agentPresets')?.composedPreset(agent.ctx)??agent.session.header.agentPreset):undefined
+   if(!agent||this.state(agent.session).mode!=='long'&&preset!==LONG_TASK_PRESET)return {...assembled,tools:assembled.tools.filter(t=>!['loop_tasks','laya_tasks'].includes(t.name))}
    return assembled
   })
   this.ctx.tools.guard(exec=>{
@@ -144,6 +145,14 @@ export class LongTasks extends TypertRemoteService {
   }
   return score
  }
+ async route(agent:Agent,kind:'coding'|'non_coding',reason:string,signal:AbortSignal):Promise<void>{
+  const job=this.state(agent.session)
+  if(job.route!=='pending'){if(job.route!==kind)throw new Error('当前任务的分流已固定；不能切换分类绕过验收。');return}
+  signal.throwIfAborted()
+  this.update(agent.session,{...job,route:kind,routingReason:reason})
+  await this.ctx.sessions.flush(agent.session)
+  if(kind==='coding'&&job.reviewEnabled){try{await this.ctx.reviewers.require(job.reviewer)}catch(error){this.pause(agent,String(error));throw error}}
+ }
  async prepare(agent:Agent,item:LayaTaskAssessment,signal:AbortSignal):Promise<Acceptance>{
   const paths=item.affectedPaths??[]
   if(item.taskType!=='opinion'&&paths.length===0)throw new Error('执行任务必须在 plan.md 的 affectedPaths 中声明实际交付路径；文本分析可用 taskType=opinion。')
@@ -164,21 +173,23 @@ export class LongTasks extends TypertRemoteService {
   this.update(agent.session,{...job,assessments:job.assessments+1,lastProgress:key})
  }
  verdict(agent:Agent,passed:boolean):void{const job=this.state(agent.session);this.update(agent.session,{...job,noProgress:passed?0:job.noProgress+1});if(!passed&&job.noProgress+1>=this.config.noProgressLimit.get())this.pause(agent,'连续三次或配置次数的修复未通过，已暂停。')}
- completed(agent:Agent):void{const job=this.state(agent.session);this.update(agent.session,{...job,phase:'done',reason:'全部任务与整体交付均已通过。',elapsedMs:job.elapsedMs+Math.max(0,Date.now()-job.activeSince),activeSince:0})}
+ completed(agent:Agent):void{const job=this.state(agent.session);this.update(agent.session,{...job,phase:'done',reason:job.route==='non_coding'?'非代码任务已正常完成。':job.reviewEnabled?'全部任务与整体交付均已通过独立验收。':'代码任务已完成主模型自检，未进行独立验收。',elapsedMs:job.elapsedMs+Math.max(0,Date.now()-job.activeSince),activeSince:0})}
  async snapshot(id?:string):Promise<Snapshot>{
   const session=id?this.ctx.sessions.get(id as Session['id']):undefined,review=session?this.ctx.sessionProjections.stateOf(session,'claudeCompletionReview'):undefined
   const job=session?this.state(session):null
   const loop=loopSettingsSchema.parse(Object.fromEntries(Object.keys(loopSettingsSchema.shape).map(key=>[key,this.config.loop[key as keyof typeof loopSettingsSchema.shape].get()??null])))
-  return {reviewer:await this.ctx.reviewers.view(),loop,job,laya:{phase:this.ctx.get('layaController')?.status().phase??'disabled',error:this.ctx.get('layaController')?.status().error??null},settings:{maxModelTokens:this.config.maxModelTokens.get(),maxCost:this.config.maxCost.get(),inputPerMillion:this.config.inputPerMillion.get(),outputPerMillion:this.config.outputPerMillion.get(),threshold:this.config.loop.layaReviewThreshold.get(),noProgressLimit:this.config.noProgressLimit.get(),maxToolCalls:this.config.maxToolCalls.get(),maxAssessments:this.config.maxAssessments.get(),maxMinutes:this.config.maxMinutes.get()},planPath:review?.plan?.path??null,currentTaskId:review?.tasks.find(t=>!review.assessments[t.id]?.passed)?.id??null,tasks:review?.tasks.map(t=>({id:t.id,title:t.title,passed:review.assessments[t.id]?.passed===true}))??[]}
+  return {reviewer:await this.ctx.reviewers.view(),loop,job,laya:{phase:this.ctx.get('layaController')?.status().phase??'disabled',error:this.ctx.get('layaController')?.status().error??null},settings:{independentReview:this.config.independentReview.get(),maxModelTokens:this.config.maxModelTokens.get(),maxCost:this.config.maxCost.get(),inputPerMillion:this.config.inputPerMillion.get(),outputPerMillion:this.config.outputPerMillion.get(),threshold:this.config.loop.layaReviewThreshold.get(),noProgressLimit:this.config.noProgressLimit.get(),maxToolCalls:this.config.maxToolCalls.get(),maxAssessments:this.config.maxAssessments.get(),maxMinutes:this.config.maxMinutes.get()},planPath:review?.plan?.path??null,currentTaskId:review?.tasks.find(t=>!review.assessments[t.id]?.passed)?.id??null,tasks:review?.tasks.map(t=>({id:t.id,title:t.title,passed:review.assessments[t.id]?.passed===true}))??[]}
  }
  @Remote
- async request(raw:Request):Promise<Snapshot>{
+ async request(raw:Request):Promise<Snapshot>{return this.dispatch(raw)}
+ private async dispatch(raw:Request,inputTurn:number|null=null):Promise<Snapshot>{
   const request=requestSchema.parse(raw)
   if(request.op==='cancelReviewerTest'){this.ctx.reviewers.cancel();return this.snapshot()}
    if(request.op==='testReviewer'){await this.ctx.reviewers.test(request.backend);return this.snapshot()}
   const operation=async()=>{
    if(request.op==='saveReviewer'){await this.ctx.reviewers.save(request.reviewer,request.apiKey);return this.snapshot()}
    if(request.op==='settings')return this.snapshot()
+   if(request.op==='saveReviewPolicy'){await this.ctx.settings.update('long-task',{independentReview:request.enabled});return this.snapshot()}
    if(request.op==='saveLoop'){await this.ctx.settings.update('long-task',{loop:request.loop});return this.snapshot()}
    if(request.op==='save'){
     const prices={maxModelTokens:request.maxModelTokens??this.config.maxModelTokens.get(),maxCost:request.maxCost??this.config.maxCost.get(),inputPerMillion:request.inputPerMillion??this.config.inputPerMillion.get(),outputPerMillion:request.outputPerMillion??this.config.outputPerMillion.get()}
@@ -191,8 +202,8 @@ export class LongTasks extends TypertRemoteService {
    let job=this.state(session)
    if(request.op==='long'||request.op==='new'||request.op==='resume'){
     if(request.op==='new'&&job.phase==='active')throw new Error('先暂停或结束当前任务，再新建任务。')
-    if(request.op==='new'||!job.jobId||job.phase==='ended'||job.phase==='done')job={...empty(),history:[...job.history,...job.jobId?[{jobId:job.jobId,phase:job.phase,at:Date.now()}]:[]],jobId:randomUUID(),cwd:session.header.cwd??'',startedAt:Date.now(),threshold:this.config.loop.layaReviewThreshold.get(),reviewer:this.ctx.reviewers.selection()}
-    await this.ctx.reviewers.require(job.reviewer)
+    if(request.op==='new'||!job.jobId||job.phase==='ended'||job.phase==='done')job={...empty(),history:[...job.history,...job.jobId?[{jobId:job.jobId,phase:job.phase,at:Date.now()}]:[]],jobId:randomUUID(),cwd:session.header.cwd??'',startedAt:Date.now(),threshold:this.config.loop.layaReviewThreshold.get(),reviewer:this.ctx.reviewers.selection(),reviewEnabled:this.config.independentReview.get(),inputTurn}
+    if(job.route==='coding'&&job.reviewEnabled)await this.ctx.reviewers.require(job.reviewer)
     job={...job,...request.op==='resume'?{noProgress:0,lastProgress:''}:{},resumeRequested:false,mode:'long',phase:'active',reason:job.pendingCalls.length?'存在结果不确定的旧动作，先核查真实产物；禁止自动重试。':'',activeSince:Date.now()}
    }else if(request.op==='acknowledge')job={...job,pendingCalls:[],reason:'用户已核查上次不确定动作，仍须按真实证据继续。'}
    else if(request.op==='end')job={...job,mode:'ordinary',phase:'ended',reason:'用户结束任务。',elapsedMs:job.elapsedMs+(job.activeSince?Date.now()-job.activeSince:0),activeSince:0}

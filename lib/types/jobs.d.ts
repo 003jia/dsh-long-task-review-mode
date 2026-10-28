@@ -38,6 +38,7 @@ export declare class LongTasks extends TypertRemoteService {
     revalidate(agent: Agent, ids: string[], reason: string): void;
     assertUnchanged(agent: Agent): void;
     evaluate(agent: Agent, request: LayaCompletionRequest, signal: AbortSignal): Promise<LayaCompletionScore>;
+    route(agent: Agent, kind: 'coding' | 'non_coding', reason: string, signal: AbortSignal): Promise<void>;
     prepare(agent: Agent, item: LayaTaskAssessment, signal: AbortSignal): Promise<Acceptance>;
     accept(agent: Agent, prepared: Acceptance, score: number, signal: AbortSignal): Promise<void>;
     attempt(agent: Agent, key: string): void;
@@ -45,6 +46,7 @@ export declare class LongTasks extends TypertRemoteService {
     completed(agent: Agent): void;
     snapshot(id?: string): Promise<Snapshot>;
     request(raw: Request): Promise<Snapshot>;
+    private dispatch;
 }
 declare module '@deepseek-ai/dsh-llm' {
     interface MessageSourceMap {

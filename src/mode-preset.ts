@@ -14,6 +14,6 @@ export class LongTaskPreset {
   const document=await this.ctx.agentPresets.readDocument('standard')
   const plugins=load(document.content,{schema:entryListSchema});checkRows(plugins)
   yield await this.ctx.agentPresets.register({id:LONG_TASK_PRESET,name:'长任务模式',
-   description:'按 plan.md 逐项执行，由本地 Laya 或云端 Jev 验收；保留通过记录，支持暂停和继续。',order:1.5,plugins})
+   description:'先判断是否为代码任务，再按验收开关选择 plan.md 与 Laya/Jev 验收或主模型自检；非代码任务正常回答。',order:1.5,plugins})
  }
 }

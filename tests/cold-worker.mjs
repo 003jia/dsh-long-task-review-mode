@@ -22,7 +22,7 @@ class Model extends LlmAdapter{
   const step=++n;let name,args
   if(stage==='seed'){
    if(step===1){name='write';args={path:'plan.md',content:'```json\n'+JSON.stringify(plan)+'\n```\n'}}
-   else if(step===2){name='loop_tasks';args={planPath:'plan.md'}}
+   else if(step===2){name='loop_tasks';args={kind:'coding',reason:'Implement two fixture code artifacts',planPath:'plan.md'}}
    else if(step===3){name='fixture_execute';args={i:1}}
    else if(step===4){name='loop_tasks';args={}}
    else if(step===5){const state=readState(request),receipt=state.receipts.filter(x=>x.text.startsWith('fixture_execute: OK')).at(-1);name='loop_tasks';args={taskUpdate:{id:'T01',status:'completed',result:'Verified cold artifact 1',evidenceIds:[receipt.id]}}}

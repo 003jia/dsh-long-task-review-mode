@@ -20,6 +20,8 @@ interface PreviousWork {
 }
 export interface ReviewState {
     jobId: string | null;
+    pendingRequirement: string;
+    pendingContext: boolean;
     threshold: number;
     turn: number;
     repairs: number;

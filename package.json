@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-long-task",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "description": "dsh-长任务自主审查模式：plan.md 驱动执行，本地 Laya / 云端 Jev 验收",
   "license": "Apache-2.0",

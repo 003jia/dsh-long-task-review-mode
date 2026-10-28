@@ -31,6 +31,8 @@ export function Settings({act,layaStatus,saveLaya,reconnect,t}:Props){
    </details><Button disabled={disabled} onClick={()=>void run(async()=>{setLoop((await act({op:'saveLoop',loop})).loop)})}>{t('saveLoop')}</Button>
   </div>
   <div className={css.group}><h3>{t('reviewerTitle')}</h3><p>{t('reviewerHint')}</p>
+   <div className={css.field}><span>{t('independentReview')}</span><Switch label={t('independentReview')} checked={draft.independentReview} disabled={disabled} onChange={value=>setDraft({...draft,independentReview:value})}/></div>
+   <p>{t('routingHint')}</p><Button disabled={disabled} onClick={()=>void run(async()=>{setDraft((await act({op:'saveReviewPolicy',enabled:draft.independentReview})).settings)})}>{t('saveReviewPolicy')}</Button>
    <p>{t('service')}: {reviewer.settings.backend==='jev'?t('cloudJev'):t('localLaya')} · {reviewer.settings.backend==='jev'?t(reviewer.phase):laya?t(laya.phase):t('loading')}</p>
    <label className={css.field}>{t('reviewerBackend')}<select value={reviewerDraft.backend} disabled={disabled} onChange={e=>setReviewerDraft({...reviewerDraft,backend:e.target.value as ReviewerSettings['backend']})}><option value="laya">{t('localLaya')}</option><option value="jev">{t('cloudJev')}</option></select></label>
    <Button disabled={disabled} onClick={()=>void run(async()=>{const s=await act({op:'saveReviewer',reviewer:reviewerDraft,...key?{apiKey:key}:{}});setReviewer(s.reviewer);setReviewerDraft(s.reviewer.settings);setKey('')})}>{t('saveReviewer')}</Button>
@@ -61,7 +63,7 @@ export function Settings({act,layaStatus,saveLaya,reconnect,t}:Props){
   <div className={css.group}><h3>{t('budgetsTitle')}</h3>
    {(['threshold','noProgressLimit','maxToolCalls','maxAssessments','maxMinutes'] as const).map((name,i)=><label key={name} className={css.field}>{t((['threshold','noProgress','tools','assessments','minutes'] as const)[i]!)}<input type="number" value={draft[name]} onChange={e=>setDraft({...draft,[name]:Number(e.target.value)})}/></label>)}
    <details open={error?true:undefined}><summary>{t('costAdvanced')}</summary><p>{t('costHint')}</p>{(['maxModelTokens','maxCost','inputPerMillion','outputPerMillion'] as const).map((name,i)=><label key={name} className={css.field}>{t((['tokens','cost','inputPrice','outputPrice'] as const)[i]!)}<input type="number" min="0" value={draft[name]} onChange={e=>setDraft({...draft,[name]:Number(e.target.value)})}/></label>)}</details>
-   <Button disabled={disabled} onClick={()=>void run(async()=>{setDraft((await act({op:'save',...draft})).settings)})}>{t('saveBudgets')}</Button>
+   <Button disabled={disabled} onClick={()=>void run(async()=>{setDraft((await act({op:'save',...Object.fromEntries(Object.entries(draft).filter(([key])=>key!=='independentReview'))} as Request)).settings)})}>{t('saveBudgets')}</Button>
   </div>{error&&<p role="alert" className={css.error}>{error}</p>}{notice&&<p role="status">{notice}</p>}
  </section>
 }

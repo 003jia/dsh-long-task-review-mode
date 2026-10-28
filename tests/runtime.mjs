@@ -28,7 +28,7 @@ const tools=async(name,args,agent=active)=>{
  const event=agent.session.append('tool/result',{turn,step:0,message:{id:'msg-'+sequence,role:'tool',source:{kind:'tool',callId},toolCallId:callId,content:r.content,isError:r.isError},...r.error?{error:r.error}:{}},{surfaceOp:'append'})
  agent.session.append('step/end',{turn,step:0});return{result:r,event,text:r.content.filter(c=>c.type==='text').map(c=>c.text).join('\n')}
 }
-const run=async args=>{const r=await tools('loop_tasks',{view:'full',...args});assert.equal(r.result.isError,false,r.text);return JSON.parse(r.text)}
+const run=async args=>{if(ctx.longTasks.state(active.session).route==='pending'&&args.kind===undefined){const routed=await tools('loop_tasks',{kind:'coding',reason:'Fixture code implementation or code analysis request'});assert.equal(routed.result.isError,false,routed.text)}const r=await tools('loop_tasks',{view:'full',...args});assert.equal(r.result.isError,false,r.text);return JSON.parse(r.text)}
 const deny=async args=>{const r=await tools('loop_tasks',{view:'full',...args});assert.equal(r.result.isError,true,r.text);return r.text}
 const owner=async id=>{const h=await ctx.agents.create({sessionId:id,meta:{cwd:root},agentOptions:{provider:'fixture',model:'no-network'}});handles.push(h);active=h.agent;void active.runMaintenance(s=>new Promise(r=>s.addEventListener('abort',r,{once:true})));return active}
 const user=(agent,turn,text)=>{agent.session.append('turn/start',{turn});agent.session.append('user/message',createUserMessage({source:{kind:'user'},content:[{type:'text',text}]}),{surfaceOp:'append'})}
@@ -64,6 +64,7 @@ try{
  ctx.tools.register(defineTool({name:'fixture_execute',description:'Create a fixture',parameters:{i:{type:'integer',required:true}},output:{schema:{type:'string'},render:(_a,v)=>[{type:'text',text:v}]},execute:args=>{writeFileSync(join(root,'artifact'+args.i+'.txt'),'verified-'+args.i);return 'Verified artifact '+args.i}}))
  for(let i=1;i<=7;i++){const receipt=await tools('fixture_execute',{i});await run({taskUpdate:{id:'T'+String(i).padStart(2,'0'),status:'completed',result:'Delivered artifact '+i,evidenceIds:[String(receipt.event.seq)]}})}
  let before=await run({}),job=service.state(a.session);assert.equal(job.acceptances.length,7);const jobId=job.jobId;const originals=JSON.stringify(before.tasks.slice(0,7))
+ await deny({kind:'non_coding',reason:'Attempt to skip the remaining code task'});await service.request({op:'saveReviewPolicy',enabled:false});assert.equal(service.state(a.session).reviewEnabled,true);await deny({selfReview:{stage:'tasks',taskId:'T08',rate:100,reason:'Attempt self-review bypass',criticalSatisfied:true}});await service.request({op:'saveReviewPolicy',enabled:true})
  const corrupt=structuredClone(before.tasks);corrupt[0].result='see report';await deny({tasks:corrupt});assert.equal(JSON.stringify((await run({})).tasks.slice(0,7)),originals)
  await deny({revalidateTaskIds:['T01'],repairAnalysis:'Reopen unchanged work'})
  const changedType=structuredClone(before.tasks);changedType[0].taskType='opinion';await deny({tasks:changedType})
@@ -134,7 +135,7 @@ try{
   async*stream(request){
    const n=++liveStep;let name,args
    if(n===1){name='write';args={path:'plan.md',content:'```json\n'+JSON.stringify(livePlan)+'\n```\n'}}
-   else if(n===2){name='loop_tasks';args={planPath:'plan.md'}}
+   else if(n===2){name='loop_tasks';args={kind:'coding',reason:'Implement the requested fixture code artifacts',planPath:'plan.md'}}
    else if(n===3||n===6){name='fixture_execute';args={i:n===3?1:2}}
    else if(n===4||n===7){name='loop_tasks';args={}}
    else if(n===5||n===8){
