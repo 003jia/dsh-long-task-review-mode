@@ -1,5 +1,5 @@
 /** Native preset plus real Loader/Agent/tools/JSONL; only model inference is scripted. */
-import {formalRequire} from './formal-imports.mjs'
+import {formalRequire,nativeExecutorPackages} from './formal-imports.mjs'
 import assert from 'node:assert/strict'
 import {mkdtempSync,realpathSync,writeFileSync,readFileSync,rmSync,mkdirSync} from 'node:fs'
 import {tmpdir} from 'node:os'
@@ -40,8 +40,8 @@ const run=async(agent,text,actions)=>{
 }
 try{
  await ctx.plugin(await load('cordis-plugin-loader')).await();ctx.loader.builtins.group=await load('cordis-plugin-group');ctx.loader.builtins.include=await load('cordis-plugin-include')
- const rows=['dsh-llm','dsh-session','dsh-session-projection','dsh-system-prompt','dsh-tools','dsh-agent','dsh-agent-loop','dsh-typert-registry','dsh-api-remote-access','dsh-api-gateway','dsh-config-editor','dsh-settings','dsh-agent-preset-registry'].map((name,i)=>({id:'core-'+i,name:'@deepseek-ai/'+name,...name==='dsh-agent-loop'?{config:{agents:[]}}:name==='dsh-agent-preset-registry'?{config:{default:'standard'}}:{}}))
- rows.push({id:'persist',name:'@deepseek-ai/dsh-session-persistence-jsonl',config:{root:join(root,'sessions'),compression:'none'}},{id:'fs',name:'@deepseek-ai/dsh-fs-local',config:{cwd:root}},{id:'standard',name:'@deepseek-ai/dsh-agent-preset',config:{id:'standard',plugins:[]}},{id:'long-task',name:resolve(import.meta.dirname,'../lib/index.js'),config:{loop:{maxToolTurns:0}}})
+ const rows=['dsh-llm','dsh-session','dsh-session-projection','dsh-system-prompt','dsh-tools',...nativeExecutorPackages,'dsh-agent','dsh-agent-loop','dsh-typert-registry','dsh-api-remote-access','dsh-api-gateway','dsh-config-editor','dsh-settings','dsh-agent-preset-registry'].map((name,i)=>({id:'core-'+i,name:'@deepseek-ai/'+name,...name==='dsh-agent-loop'?{config:{agents:[]}}:name==='dsh-agent-preset-registry'?{config:{default:'standard'}}:{}}))
+ rows.push({id:'persist',name:'@deepseek-ai/dsh-session-persistence-jsonl',config:{root:join(root,'sessions'),compression:'none'}},{id:'fs',name:'@deepseek-ai/dsh-fs-local',config:{cwd:root}},{id:'standard',name:'@deepseek-ai/dsh-agent-preset',config:{id:'standard',plugins:[]}},{id:'long-task',name:process.env.DSH_LONG_TASK_TEST_HOST??resolve(import.meta.dirname,'../lib/index.js'),config:{loop:{maxToolTurns:0}}})
  const bundle=join(root,'node_modules/@fixture/runtime');mkdirSync(bundle,{recursive:true});writeFileSync(join(bundle,'package.json'),JSON.stringify({name:'@fixture/runtime',version:'1.0.0',dsh:{bundle:{patch:'./cordis.patch.yml'}}}));writeFileSync(join(bundle,'cordis.patch.yml'),JSON.stringify([{insert:rows}]))
  writeFileSync(join(root,'package.json'),JSON.stringify({private:true,dependencies:{'@fixture/runtime':'1.0.0'},dsh:{profile:{bundles:['@fixture/runtime']}}}));writeFileSync(join(root,'cordis.yml'),'[]');await mountRootInclude(ctx,join(root,'cordis.yml'),readProfilePatches('dsh',ctx.profileContext));await ctx.loader.await()
  ctx.llm.registerAdapter(['fixture'],new Model())

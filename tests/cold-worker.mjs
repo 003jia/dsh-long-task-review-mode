@@ -1,5 +1,5 @@
 /** Cross-process cold resume using released Loader/session/persistence, with inference scripted. */
-import {formalRequire} from './formal-imports.mjs'
+import {formalRequire,nativeExecutorPackages} from './formal-imports.mjs'
 import assert from 'node:assert/strict'
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs'
 import {join,resolve} from 'node:path'
@@ -39,8 +39,8 @@ class Model extends LlmAdapter{
 }
 try{
  await ctx.plugin(await load('cordis-plugin-loader')).await();ctx.loader.builtins.group=await load('cordis-plugin-group');ctx.loader.builtins.include=await load('cordis-plugin-include')
- const rows=['dsh-llm','dsh-session','dsh-session-projection','dsh-system-prompt','dsh-tools','dsh-agent','dsh-agent-loop','dsh-typert-registry','dsh-config-editor','dsh-settings'].map((name,i)=>({id:'core-'+i,name:'@deepseek-ai/'+name,...name==='dsh-agent-loop'?{config:{agents:[]}}:{}}))
- rows.push({id:'persistence',name:'@deepseek-ai/dsh-session-persistence-jsonl',config:{root:join(root,'sessions'),compression:'none'}},{id:'fs',name:'@deepseek-ai/dsh-fs-local',config:{cwd:root}},{id:'long-task',name:resolve(import.meta.dirname,'../lib/index.js'),config:{loop:{maxToolTurns:0}}})
+ const rows=['dsh-llm','dsh-session','dsh-session-projection','dsh-system-prompt','dsh-tools',...nativeExecutorPackages,'dsh-agent','dsh-agent-loop','dsh-typert-registry','dsh-config-editor','dsh-settings'].map((name,i)=>({id:'core-'+i,name:'@deepseek-ai/'+name,...name==='dsh-agent-loop'?{config:{agents:[]}}:{}}))
+ rows.push({id:'persistence',name:'@deepseek-ai/dsh-session-persistence-jsonl',config:{root:join(root,'sessions'),compression:'none'}},{id:'fs',name:'@deepseek-ai/dsh-fs-local',config:{cwd:root}},{id:'long-task',name:process.env.DSH_LONG_TASK_TEST_HOST??resolve(import.meta.dirname,'../lib/index.js'),config:{loop:{maxToolTurns:0}}})
  writeFileSync(join(root,'cordis.yml'),JSON.stringify(rows));await ctx.loader.create({name:'cordis:include',config:{path:'./cordis.yml'}});await ctx.loader.await();assert.ok(ctx.longTasks)
  ctx.llm.registerAdapter(['fixture'],new Model())
  ctx.layaController.status=()=>({phase:'ready',error:null})

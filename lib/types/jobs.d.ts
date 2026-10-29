@@ -29,6 +29,8 @@ export declare class LongTasks extends TypertRemoteService {
     private writes;
     constructor(ctx: Context, config: Config);
     [Service.init](): AsyncGenerator<() => void, void, void>;
+    /** Determine owned task-tool availability before the model step is admitted. */
+    toolVisible(agent: Agent): boolean;
     budgetIssue(job: JobState): string | null;
     state(session: Session): JobState;
     active(agent: Agent): boolean;

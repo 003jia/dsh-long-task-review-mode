@@ -439,7 +439,9 @@ export class CompletionReviews extends Service {
       if (state.overallRepair) return 'Map the overall gap to affected tasks with loop_tasks.overallRepair before executing a repair.'
       return state.plan === null ? 'Import a valid plan.md through loop_tasks.planPath before executing this task.' : state.planError ?? undefined
     })
-    for (const name of ['loop_tasks', 'laya_tasks']) tools.register(defineTool({ name, description:
+    // Older runtimes ignore the optional admission argument and retain the presentation filter.
+    const register = tools.register.bind(tools) as (definition: ReturnType<typeof defineTool>, options: { when: (context: { agent: Agent }) => boolean }) => () => void
+    for (const name of ['loop_tasks', 'laya_tasks']) register(defineTool({ name, description:
       'Read the durable task route, plan, current item and receipts. '
       + 'Submit taskUpdate for currentTaskId only; the host retains all other results and approvals. '
       + 'First declare coding/non_coding with a reason. The Host freezes the user-selected independent-acceptance switch: code uses the saved Laya/Jev reviewer when enabled, or primary selfReview when disabled; non-code skips acceptance. '
@@ -680,7 +682,7 @@ export class CompletionReviews extends Service {
       return this.response(agent,this.state(agent), selected, view)
     },
     presentCall: args => ({ card: 'generic', title: 'Claude loop task plan', kind: 'other', rawInput: args.taskUpdate ?? args.tasks }),
-    }))
+    }), { when: ({ agent }) => this.ctx.longTasks.toolVisible(agent) })
   }
   private judgingRequirement(state: ReviewState): string {
     return state.requirement + (state.contextRequirement === '' ? '' : '\n\n[Primary-model interpretation of referenced accepted context; original human text retained above]\n' + state.contextRequirement)

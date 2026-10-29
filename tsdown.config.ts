@@ -2,7 +2,7 @@
 import {resolve} from 'node:path'
 import {pathToFileURL} from 'node:url'
 const dshSource=process.env.DSH_SOURCE
-if(!dshSource)throw new Error('Set DSH_SOURCE to a built DSH 0.2.1-rc.3 workspace')
+if(!dshSource)throw new Error('Set DSH_SOURCE to a built compatible DSH source workspace')
 const {clientBundle}=await import(pathToFileURL(resolve(dshSource,'packages/client/tsdown.client.ts')).href)
 const preset = clientBundle('@deepseek-ai/dsh-long-task', ['src/index.ts'], {
   lib: { deps: { alwaysBundle: ['zod', /^@modelcontextprotocol\//, 'acorn','js-yaml'], neverBundle: [/^@deepseek-ai\//] } },

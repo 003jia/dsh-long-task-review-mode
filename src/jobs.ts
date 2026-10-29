@@ -74,6 +74,9 @@ export class LongTasks extends TypertRemoteService {
   this.ctx.on('agent/disposed',({agent})=>{this.masks.get(agent)?.();this.masks.delete(agent);this.turnJobs.delete(agent)})
   this.ctx.on('system-prompt/assemble',async(_assembly,context,next)=>{
    const assembled=await next(),agent=context.agent
+   // Newer DSH applies provider-owned tools after the presentation waterfall.
+   // The pre-step scoped restriction above remains authoritative for ordinary mode.
+   if(!Array.isArray(assembled.tools))return assembled
    const preset=agent?(this.ctx.get('agentPresets')?.composedPreset(agent.ctx)??agent.session.header.agentPreset):undefined
    if(!agent||this.state(agent.session).mode!=='long'&&preset!==LONG_TASK_PRESET)return {...assembled,tools:assembled.tools.filter(t=>!['loop_tasks','laya_tasks'].includes(t.name))}
    return assembled
@@ -89,6 +92,11 @@ export class LongTasks extends TypertRemoteService {
     if(job.toolCalls>this.config.maxToolCalls.get()||elapsed>this.config.maxMinutes.get()*60000){this.pause(exec.agent,'长任务执行预算已达到上限。');return '长任务预算已用尽，请调整设置后继续。'}
    }
   })
+ }
+ /** Determine owned task-tool availability before the model step is admitted. */
+ toolVisible(agent:Agent):boolean{
+  const preset=this.ctx.get('agentPresets')?.composedPreset(agent.ctx)??agent.session.header.agentPreset
+  return this.state(agent.session).mode==='long'||preset===LONG_TASK_PRESET
  }
  budgetIssue(job:JobState):string|null{
   if(job.inputTokens+job.outputTokens>=this.config.maxModelTokens.get())return '模型 Token 预算已达到上限。'

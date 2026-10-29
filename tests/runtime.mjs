@@ -1,5 +1,5 @@
-/** Installed rc.3 Loader, sessions, projections, gateway, tools, filesystem and persistence. Only inference is scripted. */
-import {formalRequire} from './formal-imports.mjs'
+/** Installed supported DSH Loader, sessions, projections, gateway, tools, filesystem and persistence. Only inference is scripted. */
+import {formalRequire,nativeExecutorPackages} from './formal-imports.mjs'
 import assert from 'node:assert/strict'
 import {checkReviewers} from './reviewer-checks.mjs'
 import {mkdtempSync,realpathSync,writeFileSync,readFileSync,rmSync,mkdirSync,symlinkSync} from 'node:fs'
@@ -24,7 +24,12 @@ const tools=async(name,args,agent=active)=>{
  agent.session.append('step/start',{turn,step:0})
  agent.session.append('assistant/message',{turn,step:0,interrupted:false,stream:[],message:{role:'assistant',source:{kind:'model',provider:'fixture',model:'no-network'},content:[{type:'tool-call',id:callId,name,arguments:JSON.stringify(args)}]}},{surfaceOp:'append'})
  agent.session.append('tool/call',{turn,step:0,callId,name,arguments:JSON.stringify(args)})
- const r=await ctx.tools.execute({name,arguments:args,agent,callId,signal:AbortSignal.timeout(5000)})
+ const signal=AbortSignal.timeout(5000)
+ let r
+ if(nativeExecutorPackages.length){
+  const toolSet=await ctx.tools.resolve({agent,modelSelection:{provider:'fixture',model:'no-network'},signal})
+  try{r=(await ctx.tools.execute({calls:[{type:'tool-call',id:callId,name,arguments:JSON.stringify(args)}],agent,toolSet,signal})).results[0].result}finally{toolSet.dispose()}
+ }else r=await ctx.tools.execute({name,arguments:args,agent,callId,signal})
  const event=agent.session.append('tool/result',{turn,step:0,message:{id:'msg-'+sequence,role:'tool',source:{kind:'tool',callId},toolCallId:callId,content:r.content,isError:r.isError},...r.error?{error:r.error}:{}},{surfaceOp:'append'})
  agent.session.append('step/end',{turn,step:0});return{result:r,event,text:r.content.filter(c=>c.type==='text').map(c=>c.text).join('\n')}
 }
@@ -35,12 +40,12 @@ const user=(agent,turn,text)=>{agent.session.append('turn/start',{turn});agent.s
 const plan=(count=8)=>({format:'claude-loop-plan/v1',revision:1,goal:'Create and verify fixture artifacts',scope:'Only fixture files',tasks:Array.from({length:count},(_,i)=>({id:'T'+String(i+1).padStart(2,'0'),title:'Artifact '+(i+1),requirement:'Deliver the specified fixture file.',deliverables:['Verified file'],evidence:['Real execution receipt'],dependsOn:i?['T'+String(i).padStart(2,'0')]:[],affectedPaths:['artifact'+(i+1)+'.txt'],critical:true})),exceptions:{recoverable:'Repair current item',revisePlan:'Record reason and affected IDs',blocked:'Pause with cause'},changes:[]})
 try{
  await ctx.plugin(await load('cordis-plugin-loader')).await();ctx.loader.builtins.group=await load('cordis-plugin-group');ctx.loader.builtins.include=await load('cordis-plugin-include')
- const rows=['dsh-llm','dsh-session','dsh-session-projection','dsh-system-prompt','dsh-tools','dsh-agent','dsh-agent-loop','dsh-typert-registry','dsh-api-remote-access','dsh-api-gateway'].map((name,i)=>({id:'core-'+i,name:'@deepseek-ai/'+name,...name==='dsh-agent-loop'?{config:{agents:[]}}:{}}))
+ const rows=['dsh-llm','dsh-session','dsh-session-projection','dsh-system-prompt','dsh-tools',...nativeExecutorPackages,'dsh-agent','dsh-agent-loop','dsh-typert-registry','dsh-api-remote-access','dsh-api-gateway'].map((name,i)=>({id:'core-'+i,name:'@deepseek-ai/'+name,...name==='dsh-agent-loop'?{config:{agents:[]}}:{}}))
  rows.push({id:'credentials',name:'@deepseek-ai/dsh-credentials-local',config:{dshHome:join(root,'home'),watch:false}},{id:'editor',name:'@deepseek-ai/dsh-config-editor'},{id:'settings',name:'@deepseek-ai/dsh-settings'},
  {id:'persistence',name:'@deepseek-ai/dsh-session-persistence-jsonl',config:{root:join(root,'sessions'),compression:'none'}},
  {id:'fs',name:'@deepseek-ai/dsh-fs-local',config:{cwd:root}}, {id:'meter',name:'@deepseek-ai/dsh-token-meter'},
  {id:'compaction',name:'@deepseek-ai/dsh-compaction-basic',config:{auto:false,summarizationProvider:'summary',summarizationModel:'no-network',maxTokens:512}},
- {id:'long-task',name:resolve(import.meta.dirname,'../lib/index.js'),config:{loop:{maxToolTurns:0}}})
+ {id:'long-task',name:process.env.DSH_LONG_TASK_TEST_HOST??resolve(import.meta.dirname,'../lib/index.js'),config:{loop:{maxToolTurns:0}}})
  const bundle=join(root,'node_modules/@fixture/runtime');mkdirSync(bundle,{recursive:true});writeFileSync(join(bundle,'package.json'),JSON.stringify({name:'@fixture/runtime',version:'1.0.0',dsh:{bundle:{patch:'./cordis.patch.yml'}}}));writeFileSync(join(bundle,'cordis.patch.yml'),JSON.stringify([{insert:rows}]))
  writeFileSync(join(root,'package.json'),JSON.stringify({private:true,dependencies:{'@fixture/runtime':'1.0.0'},dsh:{profile:{bundles:['@fixture/runtime']}}}));writeFileSync(join(root,'cordis.patch.yml'),'[]');writeFileSync(join(root,'cordis.yml'),'[]');await mountRootInclude(ctx,join(root,'cordis.yml'),readProfilePatches('dsh',ctx.profileContext));await ctx.loader.await()
  await new Promise((done,fail)=>{const timer=setTimeout(()=>fail(Error('Long task services not ready')),5000);ctx.inject(['longTasks','claudeCompletionReviews'],()=>{clearTimeout(timer);done()})})

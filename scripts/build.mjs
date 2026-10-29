@@ -4,7 +4,7 @@ import {resolve,dirname} from 'node:path'
 import {spawnSync} from 'node:child_process'
 import {readFileSync,writeFileSync,mkdirSync,existsSync,symlinkSync,rmSync,readdirSync} from 'node:fs'
 const root=resolve(import.meta.dirname,'..'),source=process.env.DSH_SOURCE
-if(!source)throw Error('Set DSH_SOURCE to a built DSH 0.2.1-rc.3 source workspace (with dependencies)')
+if(!source)throw Error('Set DSH_SOURCE to a built compatible DSH source workspace (with dependencies)')
 const sourceRequire=createRequire(resolve(source,'package.json'))
 // Resolve private build dependencies from that workspace without copying shared services.
 for(const name of ['typescript','tsdown','zod','acorn','js-yaml','@types']){

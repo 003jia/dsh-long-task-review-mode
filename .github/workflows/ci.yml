@@ -10,5 +10,6 @@ jobs:
           node-version: 24
       - run: node --check lib/index.js
       - run: node --check lib/client.js
+      - run: node scripts/check-docs.mjs
       - run: npm pack --ignore-scripts
-# Real Loader/Agent regressions require DSH 0.2.1-rc.3. See docs/workflow.md.
+# Real Loader/Agent regressions require a supported installed DSH runtime. See docs/workflow.md.

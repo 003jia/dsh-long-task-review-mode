@@ -5,6 +5,7 @@ import {resolve} from 'node:path'
 mkdirSync(resolve(import.meta.dirname,'../test-results'),{recursive:true})
 export const runtime=(process.env.DSH_RUNTIME??'/Applications/DeepSeek Harness.app/Contents/Resources/app.asar/dsh').replace(/\/$/,'')+'/'
 export const formalRequire=createRequire(runtime+'node_modules/@deepseek-ai/dsh/package.json')
+export const nativeExecutorPackages=(()=>{try{formalRequire.resolve('@deepseek-ai/dsh-tool-executor-native');return ['dsh-tool-executor-native']}catch{return []}})()
 const map=new Map()
 for(const item of JSON.parse(readFileSync(runtime+'desktop-runtime.json')).sharedPackages){
   const manifest=JSON.parse(readFileSync(runtime+'node_modules/'+item.name+'/package.json'))

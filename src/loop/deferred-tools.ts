@@ -25,6 +25,7 @@ const primary = (agent: Agent): boolean => agent.session.header.origin !== 'suba
 export function registerDeferredTools(ctx: Context, enabled: Volatile<boolean>): void {
   const catalogs = new WeakMap<Agent, Set<string>>()
   const active = new WeakSet<Agent>()
+  let presentationOnlyNotice = false
   ctx.sessionProjections.register({ key: 'claudeToolSelection', stateVersion: 1,
     stateSchema: z.object({ names: z.array(z.string()), pending: z.record(z.string(), z.string()) }),
     init: () => ({ names: [], pending: {} }),
@@ -50,6 +51,16 @@ export function registerDeferredTools(ctx: Context, enabled: Volatile<boolean>):
   ctx.on('system-prompt/assemble', async (_assembly, context, next) => {
     const assembly = await next(), agent = context.agent
     if (agent === undefined || context.scope !== agent || !primary(agent)) return assembly
+    // alpha.2 owns declarations in tool providers; its presentation waterfall has no tools.
+    // Keep that provider's selection and execution rules rather than replacing them with an empty set.
+    if (!Array.isArray(assembly.tools)) {
+      active.delete(agent); catalogs.delete(agent)
+      if (enabled.get() && !presentationOnlyNotice) {
+        presentationOnlyNotice = true
+        ctx.logger.warn('[long-task] MCP prompt filtering is unavailable on the presentation-only assembly API; using DSH tool-provider visibility. Tool discovery and existing permissions remain available.')
+      }
+      return assembly
+    }
     // PTC owns its generated SDK. Do not filter declarations independently of that SDK.
     if (!enabled.get() || assembly.tools.some(tool => tool.name === 'run_code') || !assembly.tools.some(tool => tool.name === 'tool_catalog')) {
       active.delete(agent); catalogs.delete(agent); return assembly
