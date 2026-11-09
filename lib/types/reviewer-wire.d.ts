@@ -9,6 +9,7 @@ export declare const reviewerSettingsSchema: z.ZodObject<{
     endpoint: z.ZodString;
     model: z.ZodString;
     timeoutMs: z.ZodNumber;
+    codeEvidence: z.ZodDefault<z.ZodBoolean>;
 }, z.core.$strict>;
 export type ReviewerSettings = z.infer<typeof reviewerSettingsSchema>;
 export declare const reviewerSelectionSchema: z.ZodObject<{
@@ -19,6 +20,7 @@ export declare const reviewerSelectionSchema: z.ZodObject<{
     endpoint: z.ZodString;
     model: z.ZodString;
     timeoutMs: z.ZodNumber;
+    codeEvidence: z.ZodDefault<z.ZodBoolean>;
     credentialRef: z.ZodString;
     revision: z.ZodString;
 }, z.core.$strict>;

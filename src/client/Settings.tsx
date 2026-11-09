@@ -24,7 +24,8 @@ export function Settings({act,layaStatus,saveLaya,reconnect,t}:Props){
    <div className={css.presets}>{presets.map(p=><Button variant="outline" key={p.name} disabled={disabled} title={t(p.hint)} onClick={()=>{setLoop({...loop,...p.values});setNotice(t('staged'))}}>{t(p.name)}<span className={css.presetHint}>{t(p.hint)}</span></Button>)}</div>
    <p>{t('currentLoop')}: {loop.maxToolTurns===0?t('unlimited'):loop.maxToolTurns} {t('toolSteps')} · {Math.round(loop.snipAtRatio*100)}% {t('trimContext')} · {loop.maxTokensRecoveryLimit} {t('resumes')}</p>
    <label className={css.field}>{t('maxToolTurns')}<input type="number" min="0" value={loop.maxToolTurns} onChange={e=>setLoop({...loop,maxToolTurns:Number(e.target.value)})}/></label>
-   <div className={css.field}><span>{t('deferMcpTools')}</span><Switch label={t('deferMcpTools')} checked={loop.deferMcpTools} disabled={disabled} onChange={value=>setLoop({...loop,deferMcpTools:value})}/></div><p className={css.muted}>{t('toolHint')}</p>
+   <label className={css.field}>{t('loopScope')}<select value={loop.scope} disabled={disabled} onChange={e=>setLoop({...loop,scope:e.target.value as LoopSettings['scope']})}><option value="long">{t('scopeLong')}</option><option value="all">{t('scopeAll')}</option></select></label><p className={css.muted}>{t('scopeHint')}</p>
+   <div className={css.field}><span>{t('deferMcpTools')}</span><Switch label={t('deferMcpTools')} checked={loop.deferMcpTools} disabled onChange={value=>setLoop({...loop,deferMcpTools:value})}/></div><p className={css.muted}>{t('toolHint')}</p><p className={css.muted}>{t('deferInactive')}</p>
    <details open={error?true:undefined}><summary>{t('loopAdvanced')}</summary>
     {(['snipAtRatio','compactAtRatio','turnTokenBudget','budgetCompletionRatio','budgetDiminishingDelta','maxTokensRecoveryLimit','layaReviewMaxRepairs','layaReviewTimeoutMs','layaReviewStallRounds'] as const).map(name=><label key={name} className={css.field}>{t(name)}<input type="number" min="0" step={name.endsWith('Ratio')?'0.05':'1'} value={loop[name]} onChange={e=>setLoop({...loop,[name]:Number(e.target.value)})}/></label>)}
     <label className={css.field}>{t('planAgentModel')}<input value={loop.planAgentModel??''} onChange={e=>setLoop({...loop,planAgentModel:e.target.value||null})}/></label><p className={css.muted}>{t('loopAdvancedHint')}</p>
@@ -32,7 +33,8 @@ export function Settings({act,layaStatus,saveLaya,reconnect,t}:Props){
   </div>
   <div className={css.group}><h3>{t('reviewerTitle')}</h3><p>{t('reviewerHint')}</p>
    <div className={css.field}><span>{t('independentReview')}</span><Switch label={t('independentReview')} checked={draft.independentReview} disabled={disabled} onChange={value=>setDraft({...draft,independentReview:value})}/></div>
-   <p>{t('routingHint')}</p><Button disabled={disabled} onClick={()=>void run(async()=>{setDraft((await act({op:'saveReviewPolicy',enabled:draft.independentReview})).settings)})}>{t('saveReviewPolicy')}</Button>
+   <label className={css.field}>{t('nonCodingMode')}<select value={draft.nonCodingMode} disabled={disabled} onChange={e=>setDraft({...draft,nonCodingMode:e.target.value as Snapshot['settings']['nonCodingMode']})}><option value="direct">{t('ncDirect')}</option><option value="selfCheck">{t('ncSelfCheck')}</option><option value="independent">{t('ncIndependent')}</option></select></label>
+   <p>{t('routingHint')}</p><p className={css.muted}>{t('checksHint')}</p><Button disabled={disabled} onClick={()=>void run(async()=>{setDraft((await act({op:'saveReviewPolicy',enabled:draft.independentReview,nonCodingMode:draft.nonCodingMode})).settings)})}>{t('saveReviewPolicy')}</Button>
    <p>{t('service')}: {reviewer.settings.backend==='jev'?t('cloudJev'):t('localLaya')} · {reviewer.settings.backend==='jev'?t(reviewer.phase):laya?t(laya.phase):t('loading')}</p>
    <label className={css.field}>{t('reviewerBackend')}<select value={reviewerDraft.backend} disabled={disabled} onChange={e=>setReviewerDraft({...reviewerDraft,backend:e.target.value as ReviewerSettings['backend']})}><option value="laya">{t('localLaya')}</option><option value="jev">{t('cloudJev')}</option></select></label>
    <Button disabled={disabled} onClick={()=>void run(async()=>{const s=await act({op:'saveReviewer',reviewer:reviewerDraft,...key?{apiKey:key}:{}});setReviewer(s.reviewer);setReviewerDraft(s.reviewer.settings);setKey('')})}>{t('saveReviewer')}</Button>
@@ -42,6 +44,7 @@ export function Settings({act,layaStatus,saveLaya,reconnect,t}:Props){
     <label className={css.field}>{t('jevModel')}<input value={reviewerDraft.model} onChange={e=>setReviewerDraft({...reviewerDraft,model:e.target.value})}/></label>
     <label className={css.field}>{t('apiKey')}<input type="password" autoComplete="new-password" value={key} placeholder={reviewer.credentialConfigured?t('keyKeep'):t('keyMissing')} onChange={e=>setKey(e.target.value)}/></label>
     <label className={css.field}>{t('jevTimeout')}<input type="number" min="1000" value={reviewerDraft.timeoutMs} onChange={e=>setReviewerDraft({...reviewerDraft,timeoutMs:Number(e.target.value)})}/></label>
+    <div className={css.field}><span>{t('jevCodeEvidence')}</span><Switch label={t('jevCodeEvidence')} checked={reviewerDraft.codeEvidence} disabled={disabled} onChange={value=>setReviewerDraft({...reviewerDraft,codeEvidence:value})}/></div>
     <p className={css.muted}>{t('cloudHint')}</p><Button disabled={disabled||cloudDirty||!reviewer.credentialConfigured} onClick={()=>void test('jev')}>{t('testJev')}</Button>
     {cloudDirty&&<p className={css.muted}>{t('saveBeforeTest')}</p>}
    </details>
@@ -60,7 +63,7 @@ export function Settings({act,layaStatus,saveLaya,reconnect,t}:Props){
    {testing&&<p role="status">{t('checking')} <Button onClick={()=>void act({op:'cancelReviewerTest'}).catch(e=>setError(String(e)))}>{t('cancelTest')}</Button></p>}
    {reviewer.test&&<p role="status">{reviewer.test.backend==='jev'?'JEV':'Laya'} · {reviewer.test.model??'—'} · {(reviewer.test.rate*100).toFixed(1)}% · {reviewer.test.elapsedMs} ms · {t('testSample')}</p>}
   </div>
-  <div className={css.group}><h3>{t('budgetsTitle')}</h3>
+  <div className={css.group}><h3>{t('budgetsTitle')}</h3><p className={css.muted}>{t('budgetScopeHint')}</p>
    {(['threshold','noProgressLimit','maxToolCalls','maxAssessments','maxMinutes'] as const).map((name,i)=><label key={name} className={css.field}>{t((['threshold','noProgress','tools','assessments','minutes'] as const)[i]!)}<input type="number" value={draft[name]} onChange={e=>setDraft({...draft,[name]:Number(e.target.value)})}/></label>)}
    <details open={error?true:undefined}><summary>{t('costAdvanced')}</summary><p>{t('costHint')}</p>{(['maxModelTokens','maxCost','inputPerMillion','outputPerMillion'] as const).map((name,i)=><label key={name} className={css.field}>{t((['tokens','cost','inputPrice','outputPrice'] as const)[i]!)}<input type="number" min="0" value={draft[name]} onChange={e=>setDraft({...draft,[name]:Number(e.target.value)})}/></label>)}</details>
    <Button disabled={disabled} onClick={()=>void run(async()=>{setDraft((await act({op:'save',...Object.fromEntries(Object.entries(draft).filter(([key])=>key!=='independentReview'))} as Request)).settings)})}>{t('saveBudgets')}</Button>

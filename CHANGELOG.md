@@ -1,5 +1,35 @@
 # Changelog / 更新记录
 
+## 0.3.0 — 2026-11-09
+
+### 中文
+
+- 预算按任务固定：新任务在创建时记录工具调用、时长、模型 Token、费用与评分上限的快照；之后修改全局设置只影响新任务。任务菜单可对运行中的任务追加额度，预算用到 80% 时提醒一次；没有快照的旧任务继续沿用实时设置。
+- `plan.md` 任务可声明 `checks`：评分前由宿主执行的确定性命令，失败直接判该项未通过且不调用评分模型；评分请求自动补充最近一次写入交付路径的回执与其后的失败回执。
+- 非代码任务新增三种处理：直接回答（默认，行为同 0.2.x）、计划加主模型自检、计划加独立验收（opinion 类型，不要求执行回执）。模式在任务创建时固定，已有任务不受影响。
+- Claude Loop 新增 `loop.scope`：默认仅长任务模式生效，「所有会话」恢复旧行为。默认范围下普通会话不再看到 `snip`／`plan_agent`／`loop_tasks`／`laya_tasks`，上下文压力与每轮步数预算也只在长任务内生效；alpha.2 上无效的 MCP 延迟开关在设置页标注说明。
+- 设置页新增循环作用范围与非代码模式选项；保存失败保留草稿。
+
+### English
+
+- Per-job budgets: new jobs snapshot tool-call, elapsed-time, token, cost, and assessment ceilings at creation; later global changes affect only new jobs. Running jobs can be extended from the task menu, an 80% warning latches once, and legacy jobs without snapshots keep following live settings.
+- `plan.md` tasks may declare `checks`: deterministic commands the host runs before scoring. A failure marks the item unpassed without a reviewer call, and review requests automatically include the latest write receipt for deliverable paths plus any later failures.
+- Three non-code modes: direct answer (default, same behavior as 0.2.x), plan plus primary self-review, and plan plus independent opinion review (no execution receipts required). The mode is fixed when the job is created; existing jobs are unaffected.
+- `loop.scope` selects whether Claude Loop mechanisms apply to all sessions or long-task mode only (default). Under the default, ordinary sessions no longer see `snip` / `plan_agent` / `loop_tasks` / `laya_tasks`, and context-pressure plus per-turn step budgets run only inside long tasks. The ineffective MCP-deferral switch on alpha.2 is labeled as such.
+- Settings gain loop-scope and non-code mode controls; drafts survive save failures.
+
+## 0.2.4 — 2026-11-09
+
+### 中文
+
+- 修复达到工具预算后被明确拒绝的调用仍残留在待确认列表、阻止继续恢复的问题；预算拒绝结算后可从当前项继续。
+- 新增 `toolBudget()` Host 接口，工具纪律等配套插件可读取同一累计计数与实时上限。
+
+### English
+
+- Fix explicitly rejected calls remaining in the pending list after the tool budget is exhausted, which blocked resuming; settled budget refusals no longer stall continuation.
+- Add the `toolBudget()` Host API so companion plugins such as tool-discipline read the same cumulative count and live ceiling.
+
 ## 0.2.3 — 2026-10-29
 
 ### 中文

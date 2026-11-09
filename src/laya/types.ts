@@ -78,6 +78,8 @@ export interface LayaTaskItem {
     affectedPaths?: string[] | undefined;
     /** A mandatory requirement cannot pass on a percentage alone. */
     critical?: boolean | undefined;
+    /** Deterministic shell checks declared in plan.md; run by the host before scoring. */
+    checks?: string[] | undefined;
 }
 /** Laya selects a gap category; it does not generate a free-form explanation. */
 export type LayaGap = 'missing' | 'partial' | 'evidence' | 'constraints' | 'defect' | 'none';

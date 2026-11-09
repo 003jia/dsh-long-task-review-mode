@@ -14,6 +14,10 @@ export declare const loopSettingsSchema: z.ZodObject<{
     budgetDiminishingDelta: z.ZodNumber;
     maxTokensRecoveryLimit: z.ZodNumber;
     planAgentModel: z.ZodNullable<z.ZodString>;
+    scope: z.ZodEnum<{
+        all: "all";
+        long: "long";
+    }>;
     layaReviewMaxRepairs: z.ZodNumber;
     layaReviewTimeoutMs: z.ZodNumber;
     layaReviewStallRounds: z.ZodNumber;
@@ -38,6 +42,11 @@ export declare const requestSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
 }, z.core.$strict>, z.ZodObject<{
     op: z.ZodLiteral<"saveReviewPolicy">;
     enabled: z.ZodBoolean;
+    nonCodingMode: z.ZodOptional<z.ZodEnum<{
+        direct: "direct";
+        selfCheck: "selfCheck";
+        independent: "independent";
+    }>>;
 }, z.core.$strict>, z.ZodObject<{
     op: z.ZodLiteral<"saveReviewer">;
     reviewer: z.ZodObject<{
@@ -48,6 +57,7 @@ export declare const requestSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
         endpoint: z.ZodString;
         model: z.ZodString;
         timeoutMs: z.ZodNumber;
+        codeEvidence: z.ZodDefault<z.ZodBoolean>;
     }, z.core.$strict>;
     apiKey: z.ZodOptional<z.ZodString>;
 }, z.core.$strict>, z.ZodObject<{
@@ -70,10 +80,22 @@ export declare const requestSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
         budgetDiminishingDelta: z.ZodNumber;
         maxTokensRecoveryLimit: z.ZodNumber;
         planAgentModel: z.ZodNullable<z.ZodString>;
+        scope: z.ZodEnum<{
+            all: "all";
+            long: "long";
+        }>;
         layaReviewMaxRepairs: z.ZodNumber;
         layaReviewTimeoutMs: z.ZodNumber;
         layaReviewStallRounds: z.ZodNumber;
     }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    op: z.ZodLiteral<"extend">;
+    sessionId: z.ZodString;
+    toolCalls: z.ZodOptional<z.ZodNumber>;
+    minutes: z.ZodOptional<z.ZodNumber>;
+    modelTokens: z.ZodOptional<z.ZodNumber>;
+    cost: z.ZodOptional<z.ZodNumber>;
+    assessments: z.ZodOptional<z.ZodNumber>;
 }, z.core.$strict>, z.ZodObject<{
     op: z.ZodLiteral<"save">;
     maxModelTokens: z.ZodOptional<z.ZodNumber>;
@@ -85,6 +107,11 @@ export declare const requestSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     maxToolCalls: z.ZodNumber;
     maxAssessments: z.ZodNumber;
     maxMinutes: z.ZodNumber;
+    nonCodingMode: z.ZodOptional<z.ZodEnum<{
+        direct: "direct";
+        selfCheck: "selfCheck";
+        independent: "independent";
+    }>>;
 }, z.core.$strict>], "op">;
 export type Request = z.infer<typeof requestSchema>;
 export interface FileRecord {
@@ -104,10 +131,26 @@ export interface Acceptance {
     paths: string[];
     files: FileRecord[];
 }
+/** Budget ceilings captured when a job starts; later global setting changes do not move them. */
+export interface BudgetLimits {
+    toolCalls: number;
+    minutes: number;
+    modelTokens: number;
+    cost: number;
+    assessments: number;
+    noProgress: number;
+}
+/** Per-job budget: creation snapshot plus operator extensions. Null means a legacy job that follows live settings. */
+export interface JobBudget {
+    limits: BudgetLimits;
+    extra: Partial<BudgetLimits>;
+    warned80: boolean;
+}
 export interface JobState {
     route: 'pending' | 'coding' | 'non_coding';
     routingReason: string;
     reviewEnabled: boolean;
+    nonCodingMode: 'direct' | 'selfCheck' | 'independent';
     inputTurn: number | null;
     reviewer: ReviewerSelection | null;
     resolvedReviewerModel: string | null;
@@ -141,6 +184,7 @@ export interface JobState {
         phase: string;
         at: number;
     }[];
+    budget: JobBudget | null;
 }
 export interface Snapshot {
     reviewer: ReviewerView;
@@ -152,6 +196,7 @@ export interface Snapshot {
     };
     settings: {
         independentReview: boolean;
+        nonCodingMode: 'direct' | 'selfCheck' | 'independent';
         maxModelTokens: number;
         maxCost: number;
         inputPerMillion: number;

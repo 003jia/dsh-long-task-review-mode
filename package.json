@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-long-task",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "type": "module",
   "description": "DSH 长任务自主审查 / Long Task Review: plan.md, Laya & Jev, durable progress and recovery",
   "license": "Apache-2.0",

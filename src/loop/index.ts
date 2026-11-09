@@ -51,6 +51,7 @@ import type { TokenMeter } from '@deepseek-ai/dsh-token-meter'
 import type { SubagentRuntime } from '@deepseek-ai/dsh-subagent'
 import { defineTool } from '@deepseek-ai/dsh-tools'
 import type { ToolRunContext, ToolRuntime } from '@deepseek-ai/dsh-tools'
+import { LONG_TASK_PRESET } from '../mode-preset.ts'
 
 /** Plugin name, also the message source tag. */
 export const name = 'claude-loop-alignment'
@@ -75,6 +76,8 @@ export interface ClaudeLoopAlignmentConfig {
   maxTokensRecoveryLimit: Volatile<number>
   /** Optional model override for the plan subagent (null = inherit). */
   planAgentModel: Volatile<string | null>
+  /** Which sessions the loop mechanisms apply to: every conversation or long-task mode only. */
+  scope: Volatile<'all' | 'long'>
   /** Enable Laya completion assessment for primary tasks. */
   layaReviewEnabled: Volatile<boolean>
   /** Legacy setting retained for profile compatibility; non-coding tasks always skip supervision. */
@@ -120,6 +123,7 @@ export interface ClaudeLoopAlignmentInput {
   budgetDiminishingDelta?: number
   maxTokensRecoveryLimit?: number
   planAgentModel?: string | null
+  scope?: 'all' | 'long'
   layaReviewEnabled?: boolean
   layaReviewCodeOnly?: boolean
   layaReviewTaskTypeGate?: boolean
@@ -148,6 +152,7 @@ export const Config: z<ClaudeLoopAlignmentInput, ClaudeLoopAlignmentConfig> = z.
   budgetDiminishingDelta: z.number().step(1).min(0).default(500).volatile(),
   maxTokensRecoveryLimit: z.number().step(1).min(0).default(3).volatile(),
   planAgentModel: z.union([z.string(), z.const(null)]).default(null).volatile(),
+  scope: z.union(['all', 'long']).default('long').volatile(),
   layaReviewEnabled: z.boolean().default(false).volatile(),
   layaReviewCodeOnly: z.boolean().default(true).volatile(),
   layaReviewTaskTypeGate: z.boolean().default(false).volatile(),
@@ -366,9 +371,18 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
     budgetDiminishingDelta,
     maxTokensRecoveryLimit,
     planAgentModel,
+    scope,
   } = config
 
   const completionReviews = new CompletionReviews(ctx, config)
+  /** Loop mechanisms apply everywhere or only inside an explicit long-task session. */
+  const inScope = (agent: Agent | undefined): boolean => {
+    if (scope.get() === 'all') return true
+    if (agent === undefined) return false
+    if (ctx.longTasks.state(agent.session).mode === 'long') return true
+    const preset = ctx.get('agentPresets')?.composedPreset(agent.ctx) ?? agent.session.header.agentPreset
+    return preset === LONG_TASK_PRESET
+  }
   registerDeferredTools(ctx, config.deferMcpTools)
   if (!config.layaReviewCodeOnly.get()) {
     ctx.logger.warn('layaReviewCodeOnly is a legacy setting; non-coding tasks now always skip completion review.')
@@ -411,7 +425,9 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
   const tools: ToolRuntime | undefined = ctx.get('tools')
   if (tools !== undefined) {
     completionReviews.registerTool(tools)
-    tools.register(defineTool({
+    // Older runtimes ignore the optional admission argument and retain the presentation filter.
+    const registerScoped = tools.register.bind(tools) as (definition: ReturnType<typeof defineTool>, options: { when: (context: { agent: Agent }) => boolean }) => () => void
+    registerScoped(defineTool({
       name: 'snip',
       description: 'Remove the oldest part of the conversation history at the model\u2019s discretion (Claude Code SnipTool analog). '
       + 'Deletes all surface messages before the most recent `keep_recent` messages and replaces them with one small '
@@ -437,9 +453,10 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
       },
       isConcurrencySafe: () => false,
       execute(args: { keep_recent?: unknown; reason?: unknown }, exec: ToolRunContext): Promise<SnipResult> {
+        if (!inScope(exec.agent)) return Promise.reject(new Error('snip 仅在长任务模式可用。'))
         return Promise.resolve().then(() => runSnip(ctx, args, exec))
       },
-    }))
+    }), { when: ({ agent }) => inScope(agent) })
   } else {
     ctx.logger.info('[claude-loop-alignment] tools service absent; snip tool not registered')
   }
@@ -447,7 +464,8 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
   // ===== plan_agent tool: Claude Code PLAN_AGENT (read-only architect) =====
   const subagents: SubagentRuntime | undefined = ctx.get('subagents')
   if (tools !== undefined && subagents !== undefined) {
-    tools.register(defineTool({
+    const registerScoped = tools.register.bind(tools) as (definition: ReturnType<typeof defineTool>, options: { when: (context: { agent: Agent }) => boolean }) => () => void
+    registerScoped(defineTool({
       name: 'plan_agent',
       description: 'Delegate planning to a read-only software-architect subagent (Claude Code PLAN_AGENT analog). '
         + 'Use for implementation planning: the subagent explores the codebase with read-only tools and returns a '
@@ -474,6 +492,7 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
       async execute(args: { instruction?: unknown; perspective?: unknown }, exec: ToolRunContext): Promise<PlanAgentResult> {
         const agent = exec.agent
         if (agent === undefined) throw new Error('plan_agent requires an owning agent')
+        if (!inScope(agent)) throw new Error('plan_agent 仅在长任务模式可用。')
         const names = subagents.list()
         if (names.length === 0) throw new Error('no subagent provider is registered')
         let providerName: string | undefined
@@ -523,7 +542,7 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
           await run.dispose()
         }
       },
-    }))
+    }), { when: ({ agent }) => inScope(agent) })
   } else {
     ctx.logger.info('[claude-loop-alignment] subagents service unavailable: plan_agent tool not registered')
   }
@@ -537,7 +556,7 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
       if (signal.aborted) return await next()
 
       // CC-style pressure management: snip (prune), then optional summary.
-      const ratio = await measureRatio(ctx, agent, signal)
+      const ratio = inScope(agent) ? await measureRatio(ctx, agent, signal) : undefined
       if (ratio !== undefined) {
         if (snipAtRatio.get() > 0 && ratio >= snipAtRatio.get()) {
           const pruner: ToolResultPruner | undefined = ctx.get('toolResultPruner')
@@ -567,7 +586,7 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
       }
 
       // CC max_turns budget.
-      if (maxToolTurns.get() > 0) {
+      if (inScope(agent) && maxToolTurns.get() > 0) {
         const key = String(agent.session.id)
         let state = enforced.get(key)
         if (state === undefined || state.turn !== turn) {
@@ -608,7 +627,7 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
     const key = String(session.id)
 
     // CC max_output_tokens recovery.
-    if (maxTokensRecoveryLimit.get() > 0) {
+    if (inScope(agent) && maxTokensRecoveryLimit.get() > 0) {
       const finishKind = finishKinds.get(key)
       if (finishKind === 'max-tokens') {
         const count = maxTokensTrackers.get(key) ?? 0
@@ -625,7 +644,7 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
     }
 
     // CC TOKEN_BUDGET continuation.
-    if (turnTokenBudget.get() > 0) {
+    if (inScope(agent) && turnTokenBudget.get() > 0) {
       let tracker = budgetTrackers.get(key)
       if (tracker === undefined) {
         tracker = { continuationCount: 0, lastGlobalTurnTokens: 0, lastDeltaTokens: 0 }

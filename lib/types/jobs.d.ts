@@ -5,7 +5,7 @@ import type { Agent } from '@deepseek-ai/dsh-agent';
 import { type Session } from '@deepseek-ai/dsh-session';
 import type { LayaCompletionRequest, LayaCompletionScore, LayaTaskAssessment } from './laya/types.ts';
 import type { Config } from './index.ts';
-import { type JobState, type Snapshot, type Request, type Acceptance } from './wire.ts';
+import { type JobState, type Snapshot, type Request, type Acceptance, type BudgetLimits } from './wire.ts';
 declare module '@deepseek-ai/dsh-session-projection' {
     interface SessionProjectionStateMap {
         'long-task-job': JobState;
@@ -29,6 +29,15 @@ export declare class LongTasks extends TypertRemoteService {
     private writes;
     constructor(ctx: Context, config: Config);
     [Service.init](): AsyncGenerator<() => void, void, void>;
+    /** Read the same live call limit and durable job the native guard uses. */
+    toolBudget(session: Session): {
+        job: JobState;
+        limit: number;
+    };
+    /** Live settings snapshot captured when a job is created. */
+    budgetLimits(): BudgetLimits;
+    /** Effective ceilings: the job's creation snapshot plus extensions; legacy jobs without a snapshot follow live settings. */
+    jobLimits(job: JobState): BudgetLimits;
     /** Determine owned task-tool availability before the model step is admitted. */
     toolVisible(agent: Agent): boolean;
     budgetIssue(job: JobState): string | null;

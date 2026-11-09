@@ -58,6 +58,8 @@ export interface ClaudeLoopAlignmentConfig {
     maxTokensRecoveryLimit: Volatile<number>;
     /** Optional model override for the plan subagent (null = inherit). */
     planAgentModel: Volatile<string | null>;
+    /** Which sessions the loop mechanisms apply to: every conversation or long-task mode only. */
+    scope: Volatile<'all' | 'long'>;
     /** Enable Laya completion assessment for primary tasks. */
     layaReviewEnabled: Volatile<boolean>;
     /** Legacy setting retained for profile compatibility; non-coding tasks always skip supervision. */
@@ -102,6 +104,7 @@ export interface ClaudeLoopAlignmentInput {
     budgetDiminishingDelta?: number;
     maxTokensRecoveryLimit?: number;
     planAgentModel?: string | null;
+    scope?: 'all' | 'long';
     layaReviewEnabled?: boolean;
     layaReviewCodeOnly?: boolean;
     layaReviewTaskTypeGate?: boolean;

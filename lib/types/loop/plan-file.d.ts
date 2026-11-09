@@ -19,6 +19,7 @@ export declare const planDocumentSchema: z.ZodObject<{
         dependsOn: z.ZodArray<z.ZodString>;
         affectedPaths: z.ZodArray<z.ZodString>;
         critical: z.ZodBoolean;
+        checks: z.ZodDefault<z.ZodArray<z.ZodString>>;
     }, z.core.$strict>>;
     exceptions: z.ZodObject<{
         recoverable: z.ZodString;
@@ -54,6 +55,7 @@ export declare const boundPlanSchema: z.ZodObject<{
             dependsOn: z.ZodArray<z.ZodString>;
             affectedPaths: z.ZodArray<z.ZodString>;
             critical: z.ZodBoolean;
+            checks: z.ZodDefault<z.ZodArray<z.ZodString>>;
         }, z.core.$strict>>;
         exceptions: z.ZodObject<{
             recoverable: z.ZodString;

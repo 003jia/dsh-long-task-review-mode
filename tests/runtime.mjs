@@ -15,7 +15,7 @@ const load=async name=>{const m=await import(formalRequire.resolve('@deepseek-ai
 const root=realpathSync(mkdtempSync(join(tmpdir(),'dsh-long-task-'))),ctx=new Context();ctx.baseUrl=pathToFileURL(root+'/').href
 mkdirSync(join(root,'home'));ctx.provide('profileContext',{home:join(root,'home'),dir:root,name:'fixture',patchPath:join(root,'cordis.patch.yml'),installAnchor:join(root,'package.json'),cwd:root,startedBundles:[],overlays:[]});
 const checks=[],handles=[];let sequence=0,evaluations=0,rate=.95,active,afterEvaluation
-const realAgentRequests=[]
+const realAgentRequests=[],reviewRequests=[]
 class Model extends LlmAdapter{async resolveModel(provider,id){return{provider,id,name:id,inputModalities:['text']}}async*stream(request){realAgentRequests.push(request);assert.ok(!request.tools?.some(t=>['loop_tasks','laya_tasks'].includes(t.name)));yield {type:'block-start',index:0,blockType:'text'};yield {type:'block-end',index:0,block:{type:'text',text:'Hello from normal mode.'}};yield {type:'finish',reason:{kind:'stop'}}}}
 class Summary extends LlmAdapter{async resolveModel(provider,id){return{provider,id,name:id,inputModalities:['text']}}async*stream(){yield {type:'block-start',index:0,blockType:'text'};yield {type:'block-end',index:0,block:{type:'text',text:'Seven passed; continue T08 only.'}};yield {type:'finish',reason:{kind:'stop'}}}}
 const score=()=>({rate,confidence:.99,criticalSatisfied:true,gap:rate>.7?'none':'partial',dimensions:[],model:'scripted',device:null,elapsedMs:1,json:'{}'})
@@ -53,7 +53,7 @@ try{
  ctx.llm.registerAdapter(['fixture'],new Model());ctx.llm.registerAdapter(['summary'],new Summary())
  const internal=ctx.layaController
  internal.status=()=>({settings:{enabled:false,launcher:'unused',device:'cpu',models:['multilingual'],preload:false,offline:true,timeoutMs:600000},phase:'ready',error:null,actualDevice:'cpu',loadedModels:[],version:null,statusJson:null,tools:[],completionReviews:[]})
- internal.evaluateCompletion=async()=>{evaluations++;await afterEvaluation?.();afterEvaluation=undefined;return score()}
+ internal.evaluateCompletion=async(request)=>{evaluations++;reviewRequests.push(request);await afterEvaluation?.();afterEvaluation=undefined;return score()}
  const service=ctx.longTasks
  const saved=await service.request({op:'save',threshold:70,noProgressLimit:3,maxToolCalls:2200,maxAssessments:200,maxMinutes:240});assert.equal(saved.settings.maxToolCalls,2200);assert.ok(readFileSync(join(root,'cordis.patch.yml'),'utf8').includes('2200'));checks.push('Unified settings save through actual configEditor, persist and read back');
  const a=await owner('durable-a');user(a,0,'Create eight fixture files')
@@ -130,14 +130,24 @@ try{
  checks.push('Artifact changes during Laya await prevent publishing a stale acceptance')
  active=a
  const finished=agent=>new Promise((resolve,reject)=>{const timer=setTimeout(()=>{off();reject(Error('Agent timed out'))},8000);const off=ctx.on('session/event',(s,event)=>{if(s.id===agent.id&&event.type==='turn/end'){clearTimeout(timer);off();resolve(event.data.reason)}})})
- const normal=await ctx.agents.create({sessionId:'live-normal',meta:{cwd:root},agentOptions:{provider:'fixture',model:'no-network'}});handles.push(normal);const normalDone=finished(normal.agent);normal.agent.followup(createUserMessage({source:{kind:'user'},content:[{type:'text',text:'Hello'}]}));await normalDone;await normal.agent.whenIdle();assert.equal(realAgentRequests.length,1)
+ const normal=await ctx.agents.create({sessionId:'live-normal',meta:{cwd:root},agentOptions:{provider:'fixture',model:'no-network'}});handles.push(normal);const normalDone=finished(normal.agent);normal.agent.followup(createUserMessage({source:{kind:'user'},content:[{type:'text',text:'Hello'}]}));const normalReason=await normalDone;await normal.agent.whenIdle();assert.equal(normalReason.kind,'completed');assert.equal(realAgentRequests.length,1)
  assert.ok(!realAgentRequests[0].messages.some(m=>m.source?.kind==='laya-task-protocol'))
  checks.push('Actual ordinary Agent uses one model request, with neither long-task schemas nor routing protocol')
+ // Loop scope: the default long-only scope hides loop tools from ordinary sessions; 'all' restores them.
+ const scoped=await ctx.agents.create({sessionId:'live-normal-2',meta:{cwd:root},agentOptions:{provider:'fixture',model:'no-network'}});handles.push(scoped);const scopedDone=finished(scoped.agent);scoped.agent.followup(createUserMessage({source:{kind:'user'},content:[{type:'text',text:'Hello'}]}));await scopedDone;await scoped.agent.whenIdle()
+ assert.ok(!realAgentRequests.at(-1).tools?.some(t=>['snip','plan_agent'].includes(t.name)),'ordinary session hides loop tools under the default long-only scope')
+ const loopSnap=await service.request({op:'settings'})
+ await service.request({op:'saveLoop',loop:{...loopSnap.loop,scope:'all'}})
+ const wide=await ctx.agents.create({sessionId:'live-normal-3',meta:{cwd:root},agentOptions:{provider:'fixture',model:'no-network'}});handles.push(wide);const wideDone=finished(wide.agent);wide.agent.followup(createUserMessage({source:{kind:'user'},content:[{type:'text',text:'Hello'}]}));await wideDone;await wide.agent.whenIdle()
+ assert.ok(realAgentRequests.at(-1).tools?.some(t=>t.name==='snip'),'scope=all exposes loop tools to ordinary sessions')
+ await service.request({op:'saveLoop',loop:{...loopSnap.loop,scope:'long'}})
+ checks.push('Loop scope confines snip, plan_agent and loop budgets to long-task sessions by default; the all-sessions scope restores them')
  ctx.tools.register(defineTool({name:'write',description:'Write the isolated plan',parameters:{path:{type:'string',required:true},content:{type:'string',required:true}},output:{schema:{type:'string'},render:(_a,v)=>[{type:'text',text:v}]},execute:args=>{assert.equal(args.path,'plan.md');writeFileSync(join(root,args.path),args.content);return 'Saved plan.md'}}))
  let liveStep=0;const livePlan=plan(2)
  class Live extends LlmAdapter{
   async resolveModel(provider,id){return{provider,id,name:id,inputModalities:['text']}}
   async*stream(request){
+   assert.ok(request.tools?.some(t=>t.name==='snip'),'long-task session exposes loop tools under the long-only scope')
    const n=++liveStep;let name,args
    if(n===1){name='write';args={path:'plan.md',content:'```json\n'+JSON.stringify(livePlan)+'\n```\n'}}
    else if(n===2){name='loop_tasks';args={kind:'coding',reason:'Implement the requested fixture code artifacts',planPath:'plan.md'}}
@@ -159,6 +169,45 @@ try{
  const reviewerChecks=await checkReviewers({ctx,root,service,peer,owner,user,run,plan,local:d});checks.push(...reviewerChecks.checks)
  writeFileSync(resolve(import.meta.dirname,'../test-results/long-task-reviewers-20261027.json'),JSON.stringify(reviewerChecks,null,2))
  active=a
+ // Deterministic plan checks gate scoring; host-added evidence reaches the reviewer.
+ rate=.95
+ const i=await owner('checks-i');active=i;await service.request({op:'long',sessionId:i.id});user(i,0,'Create one fixture')
+ const ip=plan(1);ip.tasks[0].checks=['grep -q verified-1 artifact1.txt'];writeFileSync(join(root,'plan.md'),'```json\n'+JSON.stringify(ip)+'\n```\n');await run({planPath:'plan.md'})
+ const iReceipt=await tools('fixture_execute',{i:1});await tools('fixture_execute',{i:2});const iEvals=evaluations
+ await run({taskUpdate:{id:'T01',status:'completed',result:'Delivered artifact 1',evidenceIds:[String(iReceipt.event.seq)]}})
+ assert.equal(evaluations,iEvals+1);assert.equal(service.state(i.session).acceptances.length,1)
+ const iReq=reviewRequests.at(-1);assert.ok(iReq.evidence.some(e=>e.includes('[check]')&&e.includes('exit 0')),'check output reaches reviewer');assert.ok(iReq.evidence.some(e=>e.includes('verified-1')),'host-collected file evidence');assert.ok(iReq.evidence.some(e=>e.includes('recent, not cited')),'uncited later receipt is auto-included')
+ checks.push('Passing plan.md checks and host-collected evidence reach the reviewer; uncited later receipts are auto-included')
+ const j=await owner('checks-j');active=j;await service.request({op:'long',sessionId:j.id});user(j,0,'Create one fixture')
+ const jp=plan(1);jp.tasks[0].checks=['exit 1'];writeFileSync(join(root,'plan.md'),'```json\n'+JSON.stringify(jp)+'\n```\n');await run({planPath:'plan.md'})
+ const jReceipt=await tools('fixture_execute',{i:1});const jEvals=evaluations
+ await run({taskUpdate:{id:'T01',status:'completed',result:'Delivered artifact 1',evidenceIds:[String(jReceipt.event.seq)]}})
+ assert.equal(evaluations,jEvals,'a failing deterministic check must not consume a model assessment')
+ assert.equal(service.state(j.session).acceptances.length,0);assert.equal(service.state(j.session).noProgress,1);assert.match(ctx.sessionProjections.stateOf(j.session,'claudeCompletionReview').reviews.at(-1).items[0].reason,/Deterministic check failed/)
+ checks.push('A failing plan.md check blocks acceptance without calling the reviewer')
+ // Per-job budgets: the creation snapshot survives later global saves; extend adds headroom; the 80% warning latches once.
+ const g=await owner('budget-g');await service.request({op:'long',sessionId:g.id})
+ assert.equal(service.state(g.session).budget.limits.toolCalls,2200)
+ await service.request({op:'save',threshold:70,noProgressLimit:3,maxToolCalls:50,maxAssessments:200,maxMinutes:240})
+ assert.equal(service.toolBudget(g.session).limit,2200,'existing job keeps its creation snapshot')
+ const g2=await owner('budget-g2');await service.request({op:'long',sessionId:g2.id})
+ assert.equal(service.state(g2.session).budget.limits.toolCalls,50,'new job snapshots the current global limit')
+ await service.request({op:'save',threshold:70,noProgressLimit:3,maxToolCalls:2200,maxAssessments:200,maxMinutes:240})
+ await assert.rejects(()=>service.request({op:'extend',sessionId:g.id}),/没有要追加/)
+ await service.request({op:'extend',sessionId:g.id,toolCalls:300,minutes:30})
+ assert.equal(service.toolBudget(g.session).limit,2500);assert.equal(service.state(g.session).budget.extra.minutes,30)
+ await service.request({op:'end',sessionId:g.id})
+ await assert.rejects(()=>service.request({op:'extend',sessionId:g.id,toolCalls:1}),/仅进行中/)
+ const w=await owner('budget-w')
+ await service.request({op:'save',threshold:70,noProgressLimit:3,maxToolCalls:10,maxAssessments:200,maxMinutes:240})
+ await service.request({op:'long',sessionId:w.id})
+ await service.request({op:'save',threshold:70,noProgressLimit:3,maxToolCalls:2200,maxAssessments:200,maxMinutes:240})
+ for(let i=0;i<8;i++){const callId='w-'+i;w.session.append('tool/call',{turn:0,step:0,callId,name:'fixture_execute',arguments:'{}'});w.session.append('tool/result',{turn:0,step:0,message:{id:'wm-'+i,role:'tool',source:{kind:'tool',callId},toolCallId:callId,content:[{type:'text',text:'ok'}],isError:false}},{surfaceOp:'append'})}
+ assert.equal(service.state(w.session).toolCalls,8)
+ await service.before(w,AbortSignal.timeout(5000));assert.equal(service.state(w.session).budget.warned80,true);assert.match(service.state(w.session).reason,/80%/)
+ await service.before(w,AbortSignal.timeout(5000));assert.equal(service.state(w.session).budget.warned80,true)
+ assert.equal(service.toolBudget(b.session).limit,2200,'jobs without a snapshot follow live settings')
+ checks.push('Per-job budget snapshots survive global changes; extend adds headroom only to running jobs; the 80% warning latches once; legacy jobs follow live settings')
  const entry=[...ctx.loader.entries()].find(e=>e.options.id==='long-task');await entry.fiber.dispose();assert.equal(ctx.get('longTasks'),undefined);assert.equal(ctx.get('claudeCompletionReviews'),undefined)
  await ctx.plugin(await import(pathToFileURL(resolve(import.meta.dirname,'../lib/index.js')).href),{loop:{maxToolTurns:0}}).await();assert.ok(ctx.longTasks);assert.equal(ctx.longTasks.state(a.session).jobId,jobId);assert.equal(ctx.longTasks.state(a.session).acceptances.length,10-1)
  checks.push('Dispose/reload reconstructs durable job and acceptance history without duplicate services')

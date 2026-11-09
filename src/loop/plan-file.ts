@@ -9,7 +9,7 @@ const specification = z.object({
   id, taskType: z.enum(['execution','opinion']).default('execution'), title: z.string().trim().min(1).max(200), requirement: text,
   deliverables: z.array(text).min(1).max(8), evidence: z.array(text).min(1).max(8),
   dependsOn: z.array(id).max(40), affectedPaths: z.array(z.string().trim().min(1).max(4096)).max(32),
-  critical: z.boolean(),
+  critical: z.boolean(), checks: z.array(z.string().trim().min(1).max(500)).max(8).default([]),
 }).strict()
 
 /** Versioned plan data accepted only from the file parser or a durable recorded snapshot. */
@@ -87,7 +87,7 @@ function planRequirement(task: PlanDocument['tasks'][number]): string {
 export function planTasks(plan: PlanDocument, previous: readonly LayaTaskItem[]): LayaTaskItem[] {
   return plan.tasks.map(spec => {
     const definition = { id: spec.id, taskType: spec.taskType, title: spec.title, requirement: planRequirement(spec),
-      dependsOn: spec.dependsOn, affectedPaths: spec.affectedPaths, critical: spec.critical }
+      dependsOn: spec.dependsOn, affectedPaths: spec.affectedPaths, critical: spec.critical, checks: spec.checks }
     const old = previous.find(item => item.id === spec.id)
     return { ...definition, status: old?.status ?? 'pending', result: old?.result ?? '', evidenceIds: old?.evidenceIds ?? [] }
   })
@@ -110,7 +110,7 @@ export function revisedTasks(old: PlanDocument, next: PlanDocument): string[] {
     const task = next.tasks[index]
     if (task?.id !== prior.id || task.taskType!==prior.taskType || !task.requirement.includes(prior.requirement)
       || prior.critical && !task.critical
-      || (['deliverables', 'evidence', 'dependsOn', 'affectedPaths'] as const).some(key => prior[key].some(value => !task[key].includes(value)))) {
+      || (['deliverables', 'evidence', 'dependsOn', 'affectedPaths', 'checks'] as const).some(key => prior[key].some(value => !task[key].includes(value)))) {
       throw new Error(`Preserve ${prior.id}, its order and accepted requirements. Expand scope explicitly rather than weakening it.`)
     }
     if (JSON.stringify(prior) !== JSON.stringify(task)) affected.add(prior.id)

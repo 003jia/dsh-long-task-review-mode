@@ -6,11 +6,13 @@
 
 Select Long Task Mode in a new empty conversation. The primary model classifies the first request as coding or non-code; coding includes implementation, debugging, reading, and review. Complexity is not the criterion.
 
-- Non-code: answer normally with tools as needed, without a mandatory `plan.md` or independent evaluation.
+- Non-code, direct answer (default): answer normally with tools as needed, without a mandatory `plan.md` or independent evaluation.
+- Non-code, plan + primary self-review: an ordered task list executed item by item with explicit primary self-review; no Laya/Jev calls.
+- Non-code, plan + independent review: `plan.md` opinion items reviewed independently; execution receipts are not required for opinion items.
 - Coding with independent review enabled: structured `plan.md`, evidence for each item, independent item review, then overall review.
 - Coding with independent review disabled: an ordinary task plan, execution, item self-review, and overall self-review by the primary model. Results identify this as self-review.
 
-The independent-review switch defaults to enabled. The Host records the route, reviewer, thresholds, and policy for each new job. Later global changes do not reclassify an active job or rewrite approvals. A job that requires independent review cannot bypass it by submitting `selfReview` or changing its classification. Only that branch checks independent-review availability; an unavailable reviewer blocks it without fallback.
+The independent-review switch and the non-code mode default to their saved values and are recorded per job at creation. The Host records the route, reviewer, thresholds, and policy for each new job. Later global changes do not reclassify an active job, switch its non-code mode, or rewrite approvals. A job that requires independent review cannot bypass it by submitting `selfReview` or changing its classification. Only that branch checks independent-review availability; an unavailable reviewer blocks it without fallback.
 
 The native preset becomes fixed once the conversation starts. Task actions provide pause, continue, end, and new-task operations. Reloading the application/plugin waits for user continuation. Unfinished work retains its job ID, route, and accepted records across compaction and later turns. A fresh request after completion is classified again.
 
@@ -31,6 +33,8 @@ The independently reviewed branch uses the `claude-loop-plan/v1` template return
 
 This illustrates the update shape; actual evidence IDs must come from real execution. Accepted results, evidence, and scores cannot be rewritten from a summary. `laya_tasks` is a compatibility alias for the same implementation. Older sessions and plan formats remain readable; installation does not create missing historical scores.
 
+A plan task may declare `checks`: shell commands the host executes before scoring that item. A failing check marks the item unpassed without calling the reviewer; a timeout or denied permission pauses the job instead of approving. Review requests automatically include the most recent receipt that wrote to the item's deliverable paths plus any failure receipts recorded after it.
+
 Declare the actual deliverable paths in `affectedPaths` and supply real execution receipts. Content-only analysis can explicitly use `taskType: "opinion"` without inventing execution receipts. The task filesystem records SHA-256 fingerprints for files, binary content, directory members, additions/deletions, and in-directory symlinks. Out-of-workspace links, special files, and incomplete checks are rejected. Default limits: 512 entries, depth 32, 16 MiB per file, 64 MiB total.
 
 When an earlier deliverable changes, the plugin identifies the task and path and blocks a new approval. After examining the gap, submit `revalidateTaskIds` and `repairAnalysis` separately. Only affected items are revalidated. Earlier accepted facts remain, with new records appended. This detects acceptance-boundary changes; it does not prevent arbitrary shell writes through an operating-system sandbox.
@@ -39,13 +43,13 @@ When an earlier deliverable changes, the plugin identifies the task and path and
 
 Three consecutive no-progress or unsuccessful attempts pause by default. Rewording a result does not renew execution-evidence progress or justify duplicate scoring. User continuation allows another limited repair round while cumulative tool, evaluation, token, and elapsed-time budgets remain intact. Per-job thresholds stay fixed.
 
-Settings expose tool-call, evaluation, duration, primary-model token, and optional estimated-cost limits. Cost estimates use user-supplied input/output prices per million tokens in the same currency as the budget, without cache discounts. Missing usage blocks when cost budgeting is enabled. Limits are checked at turn/tool boundaries and cannot undo an in-flight request. Jev service billing is not included.
+Each new job snapshots its tool-call, evaluation, duration, token, and cost ceilings at creation; later global edits affect only new jobs. Jobs created before this version have no snapshot and keep following live settings. A running job can be extended additively from the task menu (tool calls, minutes, tokens, cost, or assessments); extensions apply only to that job. The budget warning latches once per job at 80% use. Settings expose the same ceilings for new jobs, plus optional estimated-cost limits. Cost estimates use user-supplied input/output prices per million tokens in the same currency as the budget, without cache discounts. Missing usage blocks when cost budgeting is enabled. Limits are checked at turn/tool boundaries and cannot undo an in-flight request. Jev service billing is not included.
 
 Durable state is stored in the plugin's `plugin:long-task/state` side log, separate from model context and chat summaries. Accepted records and user mode operations flush before returning. Record migrations must preserve history. The plugin does not alter DSH's published session format.
 
 ## Settings and reviewer backends
 
-Settings retain four Claude Loop presets: the default balanced preset, fewer interruptions for long tasks, lower cost, and cautious review. Presets fill a draft; saving applies it. Advanced loop controls, tool discovery, per-turn tool-step limits, and call statistics remain available.
+Settings retain four Claude Loop presets: the default balanced preset, fewer interruptions for long tasks, lower cost, and cautious review. Presets fill a draft; saving applies it. Advanced loop controls, tool discovery, per-turn tool-step limits, and call statistics remain available. `loop.scope` selects whether loop mechanisms (snip, context pressure, per-turn step budgets, `plan_agent`) apply to every session or only inside long-task mode; the default confines them to long tasks, and ordinary sessions then see neither loop tools nor the task protocol.
 
 Local Laya settings include launcher, device, checkpoint, preload, offline cache, timeout, connection status, discovered tools/arguments, and a fixed-sample check. The Laya environment and model weights must be installed separately.
 

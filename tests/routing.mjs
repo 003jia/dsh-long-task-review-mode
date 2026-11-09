@@ -71,10 +71,26 @@ try{
  assert.equal(job.phase,'done');assert.equal(job.reviewEnabled,true);assert.equal(requireCalls,1);assert.equal(evaluations,2);assert.equal(job.acceptances.length,1)
  review=ctx.sessionProjections.stateOf(independent.session,'claudeCompletionReview');assert.equal(review.requirement,'Implement fixture code with independent acceptance.');assert.ok(review.plan);assert.equal(review.reviews.at(-1).reviewer,'laya')
  checks.push('Code with acceptance enabled imports the fixed plan.md, uses real tool receipts and receives one item plus one overall independent assessment')
+ // Non-code review modes are captured per job at creation and frozen thereafter.
+ await ctx.longTasks.request({op:'saveReviewPolicy',enabled:true,nonCodingMode:'selfCheck'})
+ const ncSelf=await create('noncode-self'),ncCandidate='The requested outline is complete.'
+ const ncTask={id:'N1',title:'Outline',requirement:'Produce the requested outline.',status:'pending',result:'',evidenceIds:[],dependsOn:[],affectedPaths:[],critical:true}
+ const ncEvals=evaluations
+ job=await run(ncSelf,'Outline this article.',[nonCodeRoute,call('loop_tasks',{tasks:[ncTask]}),call('loop_tasks',{taskUpdate:{id:'N1',status:'completed',result:'Outline delivered',evidenceIds:[]}}),call('loop_tasks',{selfReview:{stage:'tasks',taskId:'N1',rate:95,reason:'Every requested section is covered.',criticalSatisfied:true}}),call('loop_tasks',{selfReview:{stage:'overall',rate:95,reason:'The original request is answered.',criticalSatisfied:true,candidate:ncCandidate}}),()=>({text:ncCandidate})])
+ assert.equal(job.route,'non_coding');assert.equal(job.nonCodingMode,'selfCheck');assert.equal(job.phase,'done');assert.equal(evaluations,ncEvals)
+ await ctx.longTasks.request({op:'saveReviewPolicy',enabled:true,nonCodingMode:'direct'})
+ assert.equal(ctx.longTasks.state(ncSelf.session).nonCodingMode,'selfCheck','a finished job keeps the mode captured at creation')
+ const ncFrozen=await create('noncode-frozen');await ctx.longTasks.request({op:'long',sessionId:ncFrozen.id});assert.equal(ctx.longTasks.state(ncFrozen.session).nonCodingMode,'direct')
+ await ctx.longTasks.request({op:'saveReviewPolicy',enabled:true,nonCodingMode:'independent'})
+ const ncInd=await create('noncode-ind'),ncDoc={...doc,goal:'Outline the article.',tasks:[{...doc.tasks[0],id:'N1',title:'Outline',requirement:'Produce the requested outline.',deliverables:['Outline'],evidence:['Reasoned analysis'],affectedPaths:[],taskType:'opinion'}]}
+ job=await run(ncInd,'Outline this article with independent review.',[nonCodeRoute,call('write',{path:'plan.md',content:'```json\n'+JSON.stringify(ncDoc)+'\n```'}),call('loop_tasks',{planPath:'plan.md'}),call('loop_tasks',{taskUpdate:{id:'N1',status:'completed',result:'Outline delivered',evidenceIds:[]}}),()=>({text:ncCandidate})])
+ assert.equal(job.route,'non_coding');assert.equal(job.nonCodingMode,'independent');assert.equal(job.phase,'done');assert.equal(evaluations,ncEvals+2);assert.equal(job.acceptances.length,1)
+ await ctx.longTasks.request({op:'saveReviewPolicy',enabled:true,nonCodingMode:'direct'})
+ checks.push('Non-code self-check and independent modes freeze per job, drive plan/self-review or opinion plan.md flows, and direct mode still answers plainly')
  // The code route must block when its saved reviewer is unavailable, without changing to self review.
  ctx.layaController.status=()=>({phase:'disabled',error:null});const blocked=await create('blocked-code');inspectErrors=true
  job=await run(blocked,'Implement code while the reviewer is unavailable.',[codeRoute,()=>({text:'The reviewer is unavailable; this job is blocked.'})]);inspectErrors=false
- assert.equal(job.phase,'blocked');assert.equal(job.route,'coding');assert.equal(job.reviewEnabled,true);assert.equal(errors.length,1);assert.equal(evaluations,2)
+ assert.equal(job.phase,'blocked');assert.equal(job.route,'coding');assert.equal(job.reviewEnabled,true);assert.equal(errors.length,1);assert.equal(evaluations,ncEvals+2)
  checks.push('Unavailable independent acceptance blocks only the enabled code branch and cannot silently fall back to primary review')
  // Legacy plugin records have neither route nor switch; they keep independent code acceptance.
  const legacy={...job};delete legacy.route;delete legacy.reviewEnabled;delete legacy.inputTurn;delete legacy.routingReason;ctx.longTasks.update(blocked.session,legacy)

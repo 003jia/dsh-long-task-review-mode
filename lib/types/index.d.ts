@@ -11,6 +11,7 @@ export declare const name = "long-task";
 export declare const inject: string[];
 export interface Config {
     independentReview: Volatile<boolean>;
+    nonCodingMode: Volatile<'direct' | 'selfCheck' | 'independent'>;
     reviewer: Volatile<ReviewerSelection>;
     reviewerMaxInputBytes: number;
     reviewerMaxResponseBytes: number;
@@ -28,6 +29,7 @@ export interface Config {
 }
 export declare const Config: schema<Schemastery.ObjectS<NoInfer<{
     independentReview: schema<boolean, boolean, "volatile-defined">;
+    nonCodingMode: schema<"direct" | "selfCheck" | "independent", "direct" | "selfCheck" | "independent", "volatile-defined">;
     reviewer: schema<NoInfer<Schemastery.ObjectS<NoInfer<{
         backend: schema<"laya" | "jev", "laya" | "jev", "defined">;
         endpoint: schema<string, string, "defined">;
@@ -108,6 +110,7 @@ export declare const Config: schema<Schemastery.ObjectS<NoInfer<{
     maxMinutes: schema<number, number, "volatile-defined">;
 }>>, Schemastery.ObjectT<NoInfer<{
     independentReview: schema<boolean, boolean, "volatile-defined">;
+    nonCodingMode: schema<"direct" | "selfCheck" | "independent", "direct" | "selfCheck" | "independent", "volatile-defined">;
     reviewer: schema<NoInfer<Schemastery.ObjectS<NoInfer<{
         backend: schema<"laya" | "jev", "laya" | "jev", "defined">;
         endpoint: schema<string, string, "defined">;

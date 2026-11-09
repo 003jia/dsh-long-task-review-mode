@@ -118,6 +118,20 @@ export declare class CompletionReviews extends Service {
     private judgingRequirement;
     private response;
     private record;
+    /**
+     * Run the plan-declared deterministic checks before scoring. A failure marks the item
+     * for repair without consuming an assessment; infrastructure problems throw instead.
+     * @returns check output lines for the reviewer, or null when a check failed.
+     */
+    private runItemChecks;
+    /** Receipts recorded after the cited ones, so later failures cannot hide behind an early pass. */
+    private autoReceipts;
+    /** Whether host-collected code evidence may reach the selected reviewer. */
+    private codeAllowed;
+    /** Cited receipts plus host-added recent receipts, check output and bounded deliverable evidence. */
+    private itemEvidence;
+    /** Overall evidence: per-item summaries, uncited recent receipts and bounded deliverable evidence. */
+    private overallEvidence;
     private assessItem;
     private selfAssess;
     private continueTask;
