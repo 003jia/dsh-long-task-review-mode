@@ -1,6 +1,6 @@
 /** Read-only invocation statistics. Token chunks and schema discovery never count as calls. */
 import { z } from 'zod'
-import type {} from '@deepseek-ai/dsh-tools/types'
+import type {} from '@deepseek-ai/dsh-tool-executor-ptc/types'
 import type { SessionEvent } from '@deepseek-ai/dsh-session/types'
 import type { ToolUsageCall, ToolUsageCounts, ToolUsageState, ToolUsageSummary, ToolUsageView } from './types.ts'
 

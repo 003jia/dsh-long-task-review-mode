@@ -1,12 +1,12 @@
 # DSH Long Task Review Mode
 
-[中文](README.md) · [English](README.en.md) · [Download v0.3.0](https://github.com/003jia/dsh-long-task-review-mode/releases/tag/v0.3.0) · [Workflow reference](docs/workflow.en.md)
+[中文](README.md) · [English](README.en.md) · [Download](https://github.com/003jia/dsh-long-task-review-mode/releases) · [Workflow reference](docs/workflow.en.md)
 
 **Give multi-step coding tasks a plan, evidence, item-by-item review, and a way to resume.**
 
 One DSH plugin combines Claude Loop execution coordination, local **Laya** / cloud **Jev** independent review, a native conversation mode, settings, and a live progress sidebar. The primary model performs the work; a separate model checks it against the plan. Accepted records survive context compaction, continuation, and restart.
 
-Plugin: **0.3.0** · Verified runtimes: **DSH 0.2.1-rc.3 / 0.2.2-alpha.2** · **Apache-2.0**. This is a community extension. Its package name follows existing installations and does not imply official DSH maintenance.
+Plugin: **0.3.5** · Verified runtimes: **DSH 0.2.1-rc.3 / 0.2.2-alpha.2** · **Apache-2.0**. This is a community extension. Its package name follows existing installations and does not imply official DSH maintenance.
 
 ## How it works
 
@@ -40,12 +40,12 @@ The primary model classifies the request; the Host selects the branch from the s
 
 ## Install and start
 
-1. Download `deepseek-ai-dsh-long-task-0.3.0.tgz` and `SHA256SUMS` from the [v0.3.0 release](https://github.com/003jia/dsh-long-task-review-mode/releases/tag/v0.3.0). In the download directory, run `shasum -a 256 -c SHA256SUMS`.
+1. Download `deepseek-ai-dsh-long-task-0.3.5.tgz` and `SHA256SUMS` from [GitHub Releases](https://github.com/003jia/dsh-long-task-review-mode/releases). In the download directory, run `shasum -a 256 -c SHA256SUMS`.
 2. Back up your DSH profile and wait for active work to finish. Install using the CLI for your deployment:
 
    ```sh
    # Replace desktop with your profile and use the downloaded file's absolute path.
-   dsh plugin --profile desktop add file:/absolute/path/deepseek-ai-dsh-long-task-0.3.0.tgz --config.auto-install-peers=false
+   dsh plugin --profile desktop add file:/absolute/path/deepseek-ai-dsh-long-task-0.3.5.tgz --config.auto-install-peers=false
    ```
 
 3. Restart DSH. Open **Settings → Long Task Mode → Model Review**, save the review policy, non-code mode, and backend, and validate the connection if independent review is enabled. The **Claude Loop** group adjusts the mechanism scope (long-task mode only by default) and per-turn step budgets.
@@ -70,13 +70,40 @@ The plugin uses your saved review policy. This prompt does not change the backen
 
 Jev uses the [TypeSafe System One HTTP protocol](https://docs.typesafe.ai/api/system-one), rather than Chat Completions. DSH's credential service stores the key; settings and tasks retain only a reference. The plugin defaults to local review and does not automatically switch reviewers on failure. Primary-model token/cost budgets exclude Jev service billing.
 
+## What's new in 0.3.5
+
+- Build types moved to DSH 0.2.2; read-only planning preset; snapshot + delta job journal.
+- One settings save; optional plan confirmation; add requirements mid-task.
+- Acceptance report export; background notifications; Loop button only with an active job.
+
+See the [CHANGELOG](CHANGELOG.md) for details.
+
+## What's new in 0.3.4
+
+- Plan checks use approval and sandboxing; Jev does not receive check output when code evidence is off.
+- Scores record input bytes and evidence kept/dropped/excerpted; evidence is packed by priority and receipts are compressed.
+- Ended and paused jobs recover; results arriving while paused settle automatically.
+- Pure task-state helpers with unit tests; dead code removed; report directory configurable.
+- Accepted deliverables are checked once per turn and before scoring.
+- Budget extension covers five fields; settings warn when Laya is disabled.
+
+See the [CHANGELOG](CHANGELOG.md) for details.
+
+## What's new in 0.3.3
+
+- **Restart after ending**: a new request in the same session after the user ends a long task creates a new job instead of running as ordinary work.
+- **Implementation-first plans**: code jobs with independent acceptance require every execution item to change code or files, or run a real verification; analysis goes into the item result or an opinion item, so diagnosis-only items no longer stall the job.
+- **Plan message fix**: an invalid plan.md now points to the template returned by `loop_tasks` instead of a missing file.
+
+See the [CHANGELOG](CHANGELOG.md) for details.
+
 ## What's new in 0.3.0
 
 - **Per-job budgets**: new jobs snapshot ceilings at creation and can be extended while running; an 80% warning latches once. Legacy jobs keep following live settings.
 - **Deterministic checks**: `plan.md` tasks may declare `checks` commands; the host runs them before scoring and a failure blocks acceptance without a model call.
 - **Three non-code modes**: direct answer (default), plan plus primary self-review, and plan plus independent opinion review (no execution receipts); fixed at job creation.
 - **Loop scope**: `loop.scope` defaults to long-task mode only; "all sessions" restores the previous behavior. Ordinary sessions no longer see `snip` / `plan_agent` / `loop_tasks` / `laya_tasks`.
-- **Compatibility retained**: the DSH `0.2.2-alpha.2` `undefined.some` fix, step activation conditions, and the rc.3 path are unchanged; upgrades do not reset task history, review policy, or accepted records. The MCP-deferral switch remains inactive on alpha.2 and is labeled in settings.
+- **Compatibility retained**: the DSH `0.2.2-alpha.2` `undefined.some` fix, step activation conditions, and the rc.3 path are unchanged; upgrades do not reset task history, review policy, or accepted records. MCP tools load on demand since 0.3.2: unselected tools stay out of requests and the model enables them through `tool_catalog`.
 
 See the [CHANGELOG](CHANGELOG.md) for release details.
 

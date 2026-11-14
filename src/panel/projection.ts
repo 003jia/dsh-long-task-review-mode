@@ -98,7 +98,7 @@ function endPhase(kind: string): LoopPhase {
  * @returns the new state, or the same reference for unrelated events.
  */
 export function foldLoopFlow(state: LoopFlow, event: SessionEvent, maxSteps: number, maxReviews = 20): LoopFlow {
-  const job=readJobRecord(event)
+  const job=readJobRecord(event)?.job??readJobRecord(event)?.delta
   if(job?.jobId&&job.jobId!==state.jobId)return {...emptyLoopFlow(),turn:state.turn,jobId:job.jobId}
   switch (event.type) {
     case 'turn/start':

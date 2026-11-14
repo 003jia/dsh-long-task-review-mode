@@ -77,6 +77,7 @@ export declare const en: {
     failed: string;
     actualDevice: string;
     saveBudgets: string;
+    saveAll: string;
     saveService: string;
     tokens: string;
     cost: string;
@@ -121,6 +122,7 @@ export declare const en: {
     unknown: string;
     ack: string;
     enableService: string;
+    layaFirstUse: string;
     viewPlan: string;
     budget: string;
     budgetGlobal: string;
@@ -128,6 +130,18 @@ export declare const en: {
     extendBudget: string;
     extendTools: string;
     extendMinutes: string;
+    extendTokens: string;
+    extendCost: string;
+    extendAssessments: string;
+    exportReport: string;
+    addRequirement: string;
+    supplementSave: string;
+    supplementCancel: string;
+    notifyTitle: string;
+    notifyPaused: string;
+    notifyBlocked: string;
+    notifyDone: string;
+    confirmPlan: string;
     extendSave: string;
     extendCancel: string;
     budgetScopeHint: string;
@@ -141,7 +155,7 @@ export declare const en: {
     ncDirect: string;
     ncSelfCheck: string;
     ncIndependent: string;
-    deferInactive: string;
+    deferHint: string;
 };
 export declare const zh: Record<keyof typeof en, string>;
 export type Key = keyof typeof en;

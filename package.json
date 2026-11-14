@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh-long-task",
-  "version": "0.3.0",
+  "version": "0.3.5",
   "type": "module",
   "description": "DSH 长任务自主审查 / Long Task Review: plan.md, Laya & Jev, durable progress and recovery",
   "license": "Apache-2.0",
@@ -15,7 +15,11 @@
       "types": "./lib/types/client/index.d.ts",
       "default": "./lib/client.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./plan-guard": {
+      "types": "./lib/types/plan-guard.d.ts",
+      "default": "./lib/plan-guard.js"
+    }
   },
   "files": [
     "lib",

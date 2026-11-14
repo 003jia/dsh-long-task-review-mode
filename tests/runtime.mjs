@@ -1,4 +1,4 @@
-/** Installed supported DSH Loader, sessions, projections, gateway, tools, filesystem and persistence. Only inference is scripted. */
+/** Installed rc.3 Loader, sessions, projections, gateway, tools, filesystem and persistence. Only inference is scripted. */
 import {formalRequire,nativeExecutorPackages} from './formal-imports.mjs'
 import assert from 'node:assert/strict'
 import {checkReviewers} from './reviewer-checks.mjs'
@@ -6,6 +6,7 @@ import {mkdtempSync,realpathSync,writeFileSync,readFileSync,rmSync,mkdirSync,sym
 import {tmpdir} from 'node:os'
 import {join,resolve} from 'node:path'
 import {pathToFileURL} from 'node:url'
+import {reportPath} from './report-path.mjs'
 const {defineTool}=await import(formalRequire.resolve('@deepseek-ai/dsh-tools'))
 const {Context}=await import(formalRequire.resolve('@deepseek-ai/cordis'))
 const {mountRootInclude,readProfilePatches}=await import(formalRequire.resolve('@deepseek-ai/dsh-app-boot'))
@@ -56,7 +57,26 @@ try{
  internal.evaluateCompletion=async(request)=>{evaluations++;reviewRequests.push(request);await afterEvaluation?.();afterEvaluation=undefined;return score()}
  const service=ctx.longTasks
  const saved=await service.request({op:'save',threshold:70,noProgressLimit:3,maxToolCalls:2200,maxAssessments:200,maxMinutes:240});assert.equal(saved.settings.maxToolCalls,2200);assert.ok(readFileSync(join(root,'cordis.patch.yml'),'utf8').includes('2200'));checks.push('Unified settings save through actual configEditor, persist and read back');
+ // On-demand MCP declarations: unselected tools stay out of the request and per-session activation is isolated.
+ const mcpTool=(name,text)=>defineTool({name,description:'Fixture '+name,parameters:{},output:{schema:{type:'string'},render:(_a,v)=>[{type:'text',text:v}]},execute:()=>text})
+ ctx.tools.register(mcpTool('mcp__fixture__probe','probe-ok'));ctx.tools.register(mcpTool('mcp__fixture__other','other-ok'))
  const a=await owner('durable-a');user(a,0,'Create eight fixture files')
+ assert.equal(ctx.tools.schemas(a).some(tool=>tool.name==='mcp__fixture__probe'),false,'unselected MCP tool must not be declared')
+ const blocked=await tools('mcp__fixture__probe',{})
+ assert.equal(blocked.result.isError,true,'an unloaded MCP tool must not execute')
+ const catalog=await tools('tool_catalog',{names:['mcp__fixture__probe']})
+ assert.equal(catalog.result.isError,false,catalog.text)
+ assert.equal(ctx.tools.schemas(a).some(tool=>tool.name==='mcp__fixture__probe'),true,'catalog activation reaches the next request')
+ assert.equal(ctx.tools.schemas(a).some(tool=>tool.name==='mcp__fixture__other'),false,'activation is limited to the requested tool')
+ ctx.tools.register(mcpTool('mcp__fixture__late','late-ok'))
+ assert.equal(ctx.tools.schemas(a).some(tool=>tool.name==='mcp__fixture__late'),false,'a tool registered after gating is denied immediately')
+ assert.equal(ctx.tools.schemas(a).some(tool=>tool.name==='mcp__fixture__probe'),true,'a late registration keeps the earlier selection')
+ const isolated=await owner('durable-isolated')
+ assert.equal(ctx.tools.schemas(isolated).some(tool=>tool.name==='mcp__fixture__probe'),false,'activation is isolated per session')
+ active=a
+ const loaded=await tools('mcp__fixture__probe',{})
+ assert.equal(loaded.result.isError,false,loaded.text)
+ checks.push('MCP tools load on demand through tool_catalog; unselected tools stay undeclared and per-session activation is isolated')
  assert.equal(ctx.claudeCompletionReviews.instructionFor(a,[]),null);await deny({planPath:'plan.md'});assert.equal(evaluations,0)
  const peer=new Peer(ctx,{principal:{kind:'owner'}})
  const remote=await ctx.typertGateway.invoke({peer,namespace:'longTasks',method:'request',args:{request:{op:'long',sessionId:a.id}}});assert.equal(remote.job.phase,'active')
@@ -167,7 +187,7 @@ try{
  checks.push('Actual long-task Agent resumes the same paused job from an explicit user continue message and executes plan import, two item grades and final acceptance')
  await ctx.sessionPersistence.flush();const disk=await ctx.sessionPersistence.open(live.agent.id,'read');const restored=(await disk.read()).events;await disk.close();assert.ok(restored.some(e=>e.type==='plugin:long-task/state'&&e.data.jobId===service.state(live.agent.session).jobId));checks.push('The actual JSONL persistence provider flushes and reads back jobId and immutable acceptance records')
  const reviewerChecks=await checkReviewers({ctx,root,service,peer,owner,user,run,plan,local:d});checks.push(...reviewerChecks.checks)
- writeFileSync(resolve(import.meta.dirname,'../test-results/long-task-reviewers-20261027.json'),JSON.stringify(reviewerChecks,null,2))
+ writeFileSync(reportPath('long-task-reviewers-20261027.json'),JSON.stringify(reviewerChecks,null,2))
  active=a
  // Deterministic plan checks gate scoring; host-added evidence reaches the reviewer.
  rate=.95
@@ -211,6 +231,6 @@ try{
  const entry=[...ctx.loader.entries()].find(e=>e.options.id==='long-task');await entry.fiber.dispose();assert.equal(ctx.get('longTasks'),undefined);assert.equal(ctx.get('claudeCompletionReviews'),undefined)
  await ctx.plugin(await import(pathToFileURL(resolve(import.meta.dirname,'../lib/index.js')).href),{loop:{maxToolTurns:0}}).await();assert.ok(ctx.longTasks);assert.equal(ctx.longTasks.state(a.session).jobId,jobId);assert.equal(ctx.longTasks.state(a.session).acceptances.length,10-1)
  checks.push('Dispose/reload reconstructs durable job and acceptance history without duplicate services')
- writeFileSync(resolve(import.meta.dirname,'../test-results/long-task-runtime-20261026.json'),JSON.stringify({checks,evaluations,scriptedInference:true,realLoader:true},null,2))
+ writeFileSync(reportPath('long-task-runtime-20261026.json'),JSON.stringify({checks,evaluations,scriptedInference:true,realLoader:true},null,2))
  console.log(JSON.stringify({ok:true,checks,evaluations},null,2))
 }finally{for(const h of handles.reverse())await h.dispose();await ctx.fiber.dispose();rmSync(root,{recursive:true,force:true})}

@@ -37,6 +37,7 @@
 import { Context } from '@deepseek-ai/cordis'
 import { CompletionReviews } from './completion-review.ts'
 import { registerDeferredTools } from './deferred-tools.ts'
+import { PLAN_PRESET } from '../mode-preset.ts'
 import { startPlanSubagent } from './plan-subagent.ts'
 import type { Volatile } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
@@ -82,6 +83,7 @@ export interface ClaudeLoopAlignmentConfig {
   layaReviewEnabled: Volatile<boolean>
   /** Legacy setting retained for profile compatibility; non-coding tasks always skip supervision. */
   layaReviewCodeOnly: Volatile<boolean>
+  confirmPlan: Volatile<boolean>
   /** Legacy item classifier setting retained for profile compatibility; coding items use execution evidence. */
   layaReviewTaskTypeGate: Volatile<boolean>
   /** Every item and the final overall percentage must meet this threshold. */
@@ -126,6 +128,7 @@ export interface ClaudeLoopAlignmentInput {
   scope?: 'all' | 'long'
   layaReviewEnabled?: boolean
   layaReviewCodeOnly?: boolean
+  confirmPlan?: boolean
   layaReviewTaskTypeGate?: boolean
   layaReviewThreshold?: number
   layaReviewMaxRepairs?: number
@@ -155,6 +158,7 @@ export const Config: z<ClaudeLoopAlignmentInput, ClaudeLoopAlignmentConfig> = z.
   scope: z.union(['all', 'long']).default('long').volatile(),
   layaReviewEnabled: z.boolean().default(false).volatile(),
   layaReviewCodeOnly: z.boolean().default(true).volatile(),
+  confirmPlan: z.boolean().default(false).volatile(),
   layaReviewTaskTypeGate: z.boolean().default(false).volatile(),
   layaReviewThreshold: z.number().min(0).max(100).default(70).volatile(),
   layaReviewMaxRepairs: z.number().step(1).min(0).max(10).default(0).volatile(),
@@ -361,7 +365,7 @@ function runSnip(
  * @param ctx - plugin context.
  * @param config - validated plugin configuration.
  */
-export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
+export async function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): Promise<void> {
   const {
     maxToolTurns,
     snipAtRatio,
@@ -383,7 +387,7 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
     const preset = ctx.get('agentPresets')?.composedPreset(agent.ctx) ?? agent.session.header.agentPreset
     return preset === LONG_TASK_PRESET
   }
-  registerDeferredTools(ctx, config.deferMcpTools)
+  await registerDeferredTools(ctx, config.deferMcpTools)
   if (!config.layaReviewCodeOnly.get()) {
     ctx.logger.warn('layaReviewCodeOnly is a legacy setting; non-coding tasks now always skip completion review.')
   }
@@ -498,13 +502,13 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
         let providerName: string | undefined
         for (const candidate of names) {
           const provider = subagents.getProvider(candidate)
-          if (provider !== undefined && provider.capabilities.toolFilter) {
+          if (provider !== undefined && provider.capabilities.agentPreset) {
             providerName = candidate
             break
           }
         }
         if (providerName === undefined) {
-          throw new Error('no subagent provider with tool-filter capability (plan_agent needs read-only scoping)')
+          throw new Error('no subagent provider with preset capability (plan_agent needs the read-only plan preset)')
         }
         const instruction = typeof args.instruction === 'string' ? args.instruction : ''
         const perspective = typeof args.perspective === 'string' ? args.perspective : undefined
@@ -520,7 +524,7 @@ export function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void {
           parent: agent,
           signal: exec.signal,
           maxDepth: 1,
-          toolFilter: { allow: PLAN_TOOL_ALLOW },
+          agentPreset: PLAN_PRESET,
           ...agentOptions === undefined ? {} : { agentOptions },
         })
         try {

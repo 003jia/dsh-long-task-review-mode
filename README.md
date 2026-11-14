@@ -1,12 +1,12 @@
 # DSH 长任务自主审查模式
 
-[中文](README.md) · [English](README.en.md) · [下载 v0.3.0](https://github.com/003jia/dsh-long-task-review-mode/releases/tag/v0.3.0) · [详细工作流](docs/workflow.md)
+[中文](README.md) · [English](README.en.md) · [下载](https://github.com/003jia/dsh-long-task-review-mode/releases) · [详细工作流](docs/workflow.md)
 
 **让多步骤代码任务有计划、有证据、有逐项验收，也能暂停后继续。**
 
 一个 DSH 插件整合 Claude Loop 执行协调、本地 **Laya**／云端 **Jev** 独立验收、原生会话模式、设置页与进度侧栏。主模型负责执行，独立模型按计划检查结果；已有通过记录在上下文压缩、继续和重启后保留。
 
-当前插件：**0.3.0** · 已验证运行时：**DSH 0.2.1-rc.3 / 0.2.2-alpha.2** · **Apache-2.0**。这是社区扩展，包名沿用现有部署；不代表 DSH 官方维护。
+当前插件：**0.3.5** · 已验证运行时：**DSH 0.2.1-rc.3 / 0.2.2-alpha.2** · **Apache-2.0**。这是社区扩展，包名沿用现有部署；不代表 DSH 官方维护。
 
 ## 先看它如何工作
 
@@ -40,12 +40,12 @@
 
 ## 安装与开始使用
 
-1. 从 [v0.3.0 Release](https://github.com/003jia/dsh-long-task-review-mode/releases/tag/v0.3.0) 下载 `deepseek-ai-dsh-long-task-0.3.0.tgz` 和 `SHA256SUMS`。在下载目录执行 `shasum -a 256 -c SHA256SUMS`。
+1. 从 [GitHub Releases](https://github.com/003jia/dsh-long-task-review-mode/releases) 下载 `deepseek-ai-dsh-long-task-0.3.5.tgz` 和 `SHA256SUMS`。在下载目录执行 `shasum -a 256 -c SHA256SUMS`。
 2. 备份自己的 DSH profile；等待正在执行的任务结束。使用对应部署的 DSH CLI 安装：
 
    ```sh
    # desktop 可替换为自己的 profile；改成下载包的绝对路径。
-   dsh plugin --profile desktop add file:/absolute/path/deepseek-ai-dsh-long-task-0.3.0.tgz --config.auto-install-peers=false
+   dsh plugin --profile desktop add file:/absolute/path/deepseek-ai-dsh-long-task-0.3.5.tgz --config.auto-install-peers=false
    ```
 
 3. 重启 DSH，进入 **设置 → 长任务模式 → 模型验收**，保存独立验收开关、非代码模式与后端；需要独立验收时先校验连接。**Claude Loop** 分组可调整作用范围（默认仅长任务模式）与每轮步数预算。
@@ -70,13 +70,40 @@
 
 Jev 使用 [TypeSafe System One HTTP 协议](https://docs.typesafe.ai/api/system-one)，不是 Chat Completions 接口。密钥保存在 DSH 凭据服务，配置与任务仅持有引用。默认不主动切到云端；所选后端不可用时不自动换模型。主模型 Token/费用预算不包含 Jev 服务账单。
 
+## 0.3.5 更新
+
+- 构建类型迁到 DSH 0.2.2；只读规划预设；状态日志改为快照 + 差量。
+- 设置页统一保存；执行前确认计划；任务中途补充需求。
+- 导出验收报告；后台通知；Loop 按钮仅在长任务会话显示。
+
+详细变更见 [CHANGELOG](CHANGELOG.md)。
+
+## 0.3.4 更新
+
+- 计划检查改走审批与沙箱；Jev 未开启代码外发时不发送检查输出。
+- 评分记录输入字节、证据保留/丢弃/截断；证据按优先级打包，回执压缩。
+- 结束/暂停状态可恢复；暂停期间返回的结果自动结算。
+- 任务状态纯函数与单元测试；删除死代码；测试报告目录可配置。
+- 已验收交付物每回合只校验一次，评分前复核。
+- 追加预算支持五项；设置页提示 Laya 未启用。
+
+详细变更见 [CHANGELOG](CHANGELOG.md)。
+
+## 0.3.3 更新
+
+- **结束后可重新开始**：用户结束长任务后，在同一会话发送新请求会创建新任务，不再被当成普通回合。
+- **实现优先计划**：独立验收的代码任务要求每个执行项产生代码/文件变更或运行真实验证；分析写入结果或标为 opinion，避免纯诊断项卡住流程。
+- **计划提示修正**：非法 plan.md 的提示改为读取 `loop_tasks` 返回的模板，不再指向不存在的文件。
+
+详细变更见 [CHANGELOG](CHANGELOG.md)。
+
 ## 0.3.0 更新
 
 - **按任务预算**：新任务快照创建时的上限，运行中可追加；80% 提醒一次。旧任务沿用实时设置。
 - **确定性检查**：`plan.md` 任务可声明 `checks` 命令，宿主在评分前执行，失败不调模型直接判未通过。
 - **非代码三模式**：直接回答（默认）、计划加主模型自检、计划加独立验收（opinion，不要求执行回执）；创建时固定。
 - **循环作用范围**：`loop.scope` 默认仅长任务模式；「所有会话」恢复旧行为。普通会话不再看到 `snip`／`plan_agent`／`loop_tasks`／`laya_tasks`。
-- **兼容修复保留**：DSH `0.2.2-alpha.2` 的 `undefined.some` 修复、步骤激活条件与 rc.3 兼容路径不变；升级不重置任务历史、验收策略与通过记录。alpha.2 上 MCP 延迟加载开关仍不生效，设置页已标注。
+- **兼容修复保留**：DSH `0.2.2-alpha.2` 的 `undefined.some` 修复、步骤激活条件与 rc.3 兼容路径不变；升级不重置任务历史、验收策略与通过记录。0.3.2 起 MCP 工具按需加载已生效：未选择的工具不进入请求，模型通过 `tool_catalog` 按需开启。
 
 详细变更见 [CHANGELOG](CHANGELOG.md)。
 

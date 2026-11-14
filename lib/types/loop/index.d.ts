@@ -64,6 +64,7 @@ export interface ClaudeLoopAlignmentConfig {
     layaReviewEnabled: Volatile<boolean>;
     /** Legacy setting retained for profile compatibility; non-coding tasks always skip supervision. */
     layaReviewCodeOnly: Volatile<boolean>;
+    confirmPlan: Volatile<boolean>;
     /** Legacy item classifier setting retained for profile compatibility; coding items use execution evidence. */
     layaReviewTaskTypeGate: Volatile<boolean>;
     /** Every item and the final overall percentage must meet this threshold. */
@@ -107,6 +108,7 @@ export interface ClaudeLoopAlignmentInput {
     scope?: 'all' | 'long';
     layaReviewEnabled?: boolean;
     layaReviewCodeOnly?: boolean;
+    confirmPlan?: boolean;
     layaReviewTaskTypeGate?: boolean;
     layaReviewThreshold?: number;
     layaReviewMaxRepairs?: number;
@@ -132,4 +134,4 @@ export declare const inject: string[];
  * @param ctx - plugin context.
  * @param config - validated plugin configuration.
  */
-export declare function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): void;
+export declare function apply(ctx: Context, config: ClaudeLoopAlignmentConfig): Promise<void>;

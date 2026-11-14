@@ -20,7 +20,7 @@ if(!existsSync(mcp)){
  mkdirSync(dirname(mcp),{recursive:true});symlinkSync(dir,mcp,'dir')
 }
 const cfg=JSON.parse(readFileSync(resolve(root,'tsconfig.json'),'utf8'))
-const prefix='../../dsh-upgrades/upgrade-0.2.1-alpha.2/'
+const prefix='../../dsh-upgrades/upgrade-0.2.2-alpha.2/'
 cfg.compilerOptions.paths=Object.fromEntries(Object.entries(cfg.compilerOptions.paths).map(([name,paths])=>[name,paths.map(p=>p.startsWith(prefix)?resolve(source,p.slice(prefix.length)):p)]))
 cfg.compilerOptions.typeRoots=cfg.compilerOptions.typeRoots.map(p=>resolve(source,p.slice(prefix.length)))
 const generated=resolve(root,'tsconfig.generated.json');writeFileSync(generated,JSON.stringify(cfg,null,2))

@@ -5,6 +5,7 @@ import {mkdtempSync,realpathSync,writeFileSync,rmSync,mkdirSync} from 'node:fs'
 import {tmpdir} from 'node:os'
 import {join,resolve} from 'node:path'
 import {pathToFileURL} from 'node:url'
+import {reportPath} from './report-path.mjs'
 const {Context}=await import(formalRequire.resolve('@deepseek-ai/cordis'))
 const {LlmAdapter,createUserMessage}=await import(formalRequire.resolve('@deepseek-ai/dsh-llm'))
 const {defineTool}=await import(formalRequire.resolve('@deepseek-ai/dsh-tools'))
@@ -32,9 +33,9 @@ try{
  await ctx.plugin(await load('cordis-plugin-loader')).await();ctx.loader.builtins.group=await load('cordis-plugin-group');ctx.loader.builtins.include=await load('cordis-plugin-include')
  const probe=join(root,'preset-probe.mjs');writeFileSync(probe,`import {defineTool} from ${JSON.stringify(formalRequire.resolve('@deepseek-ai/dsh-tools'))};export const inject=['tools'];export function apply(ctx){ctx.effect(()=>ctx.tools.register(defineTool({name:'preset_probe',description:'Standard capability retained by long-task',parameters:{},output:{schema:{type:'string'},render:(_a,v)=>[{type:'text',text:v}]},execute:()=> 'probe'})),'probe')}`)
  const rows=['dsh-llm','dsh-session','dsh-session-projection','dsh-system-prompt','dsh-tools',...nativeExecutorPackages,'dsh-agent','dsh-agent-loop','dsh-typert-registry','dsh-api-remote-access','dsh-api-gateway','dsh-config-editor','dsh-settings','dsh-agent-preset-registry'].map((name,i)=>({id:'core-'+i,name:'@deepseek-ai/'+name,...name==='dsh-agent-loop'?{config:{agents:[]}}:name==='dsh-agent-preset-registry'?{config:{default:'standard'}}:{}}))
- rows.push({id:'standard',name:'@deepseek-ai/dsh-agent-preset',config:{id:'standard',order:1,plugins:[{id:'probe',name:probe}]}},{id:'long-task',name:process.env.DSH_LONG_TASK_TEST_HOST??resolve(import.meta.dirname,'../lib/index.js'),config:{loop:{maxToolTurns:0}}})
+ rows.push({id:'standard',name:'@deepseek-ai/dsh-agent-preset',config:{id:'standard',order:1,plugins:[{id:'probe',name:probe}]}},{id:'long-task',name:process.env.DSH_LONG_TASK_TEST_HOST??resolve(import.meta.dirname,'../lib/index.js'),config:{loop:{maxToolTurns:0,deferMcpTools:false}}})
  writeFileSync(join(root,'cordis.yml'),JSON.stringify(rows));await ctx.loader.create({name:'cordis:include',config:{path:'./cordis.yml'}});await ctx.loader.await()
- const roster=await ctx.agentPresets.list();assert.deepEqual(roster.map(r=>r.id),['standard','long-task']);assert.ok(!roster[1].broken,roster[1].broken);assert.equal(ctx.agentPresets.defaultId,'standard')
+ const roster=await ctx.agentPresets.list();assert.deepEqual(roster.map(r=>r.id),['standard','long-task','long-task-plan']);assert.ok(!roster[1].broken,roster[1].broken);assert.equal(ctx.agentPresets.defaultId,'standard')
  const base=await ctx.agentPresets.readDocument('standard'),long=await ctx.agentPresets.readDocument('long-task');assert.equal(base.content,long.content)
  checks.push('Native roster adds exactly one long-task choice, preserves Standard composition and does not change the default')
  ctx.layaController.status=()=>({phase:'ready',error:null});ctx.llm.registerAdapter(['fixture'],new Model())
@@ -51,5 +52,5 @@ try{
  checks.push('After the first turn the native preset remains locked and the durable job is preserved')
  const entry=[...ctx.loader.entries()].find(e=>e.options.id==='long-task');await entry.fiber.dispose();assert.equal((await ctx.agentPresets.list()).some(p=>p.id==='long-task'),false);assert.equal(ctx.agentPresets.defaultId,'standard')
  checks.push('Disposing the plugin removes only its menu choice and keeps Standard registered')
- writeFileSync(resolve(import.meta.dirname,'../test-results/long-task-native-preset-20261027.json'),JSON.stringify({realLoader:true,scriptedInference:true,checks},null,2));console.log(JSON.stringify({checks}))
+ writeFileSync(reportPath('long-task-native-preset-20261027.json'),JSON.stringify({realLoader:true,scriptedInference:true,checks},null,2));console.log(JSON.stringify({checks}))
 }finally{for(const h of handles.reverse())await h.dispose();await ctx.fiber.dispose();rmSync(root,{recursive:true,force:true})}

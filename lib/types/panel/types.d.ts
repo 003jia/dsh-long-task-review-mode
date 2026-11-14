@@ -138,13 +138,7 @@ export interface ToolUsageState {
     session: Record<string, ToolUsageCounts>;
     calls: Record<string, Record<string, ToolUsageCall>>;
 }
-declare module '@deepseek-ai/dsh-session-projection/types' {
-    interface SessionProjectionStateMap {
-        /** Latest turn's pure fold state. */
-        'claude-loop-flow': LoopFlow;
-        /** Tool identity and count state reconstructed from the full durable log. */
-        'claude-loop-tool-usage': ToolUsageState;
-    }
+declare module '@deepseek-ai/dsh-session-projection' {
     interface SessionProjectionMap {
         /** Latest turn's execution graph and retained step ledger. */
         'claude-loop-flow': LoopFlow;

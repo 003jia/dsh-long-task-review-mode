@@ -4,7 +4,7 @@ import {pathToFileURL} from 'node:url'
 const dshSource=process.env.DSH_SOURCE
 if(!dshSource)throw new Error('Set DSH_SOURCE to a built compatible DSH source workspace')
 const {clientBundle}=await import(pathToFileURL(resolve(dshSource,'packages/client/tsdown.client.ts')).href)
-const preset = clientBundle('@deepseek-ai/dsh-long-task', ['src/index.ts'], {
+const preset = clientBundle(import.meta.dirname, ['src/index.ts', 'src/plan-guard.ts'], {
   lib: { deps: { alwaysBundle: ['zod', /^@modelcontextprotocol\//, 'acorn','js-yaml'], neverBundle: [/^@deepseek-ai\//] } },
 })
 // This independent repository is outside the monorepo package roster. Keep the

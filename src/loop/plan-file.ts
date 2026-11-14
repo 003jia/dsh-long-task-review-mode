@@ -47,7 +47,7 @@ export const planTemplate = '# Task plan\n\n```json\n' + JSON.stringify({
  */
 export function parsePlan(content: string, taskLimit: number): PlanDocument {
   const blocks = [...content.matchAll(/^```json\s*\r?\n([\s\S]*?)^```\s*$/gm)]
-  if (blocks.length !== 1) throw new Error('plan.md must contain exactly one fenced json block; see docs/plan-template.md.')
+  if (blocks.length !== 1) throw new Error('plan.md must contain exactly one fenced json block; read loop_tasks for the current planTemplate.')
   const plan = planDocumentSchema.parse(JSON.parse(blocks[0]![1]!))
   if (plan.tasks.length > taskLimit) throw new Error(`plan.md exceeds the configured ${taskLimit} task limit.`)
   const earlier = new Set<string>()

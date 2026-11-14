@@ -9,7 +9,7 @@ import type { ContentBlock, UserMessage } from '@deepseek-ai/dsh-llm'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import {readJobRecord} from '../job-record.ts'
 import type { SessionId, SessionSeq } from '@deepseek-ai/dsh-session/types'
-import type { ProjectionDefinition } from '@deepseek-ai/dsh-session-projection'
+import type { ProjectionDefinition, ProjectionHandle } from '@deepseek-ai/dsh-session-projection'
 import type {} from '@deepseek-ai/dsh-session'
 import type { LayaCompletionReview, LayaCompletionScore, LayaTaskItem, LayaTaskAssessment, LayaGap } from '../laya/types.ts'
 import type { ClaudeLoopAlignmentConfig } from './index.ts'
@@ -19,9 +19,11 @@ import type {} from '@deepseek-ai/dsh-working-directory'
 import { boundPlanSchema, parsePlan, planHash, planTasks, revisedTasks, planTemplate } from './plan-file.ts'
 import type { BoundPlan } from './plan-file.ts'
 import {hash} from '../artifacts.ts'
-import {runChecks} from './checks.ts'
+import {isResumeIntent} from '../resume.ts'
+import {runChecks,directCheckRunner,checkEnvironment,CHECK_OUTPUT_LIMIT,type CheckRunner} from './checks.ts'
 import {codeEvidence} from './evidence.ts'
 import { isPlanningProgram } from './planning-program.ts'
+import {digest,fingerprint,displayedItems,expandAffected,reopen} from './task-state.ts'
 
 type TaskKind = 'coding' | 'non_coding'
 type ReviewMode = 'laya' | 'self' | 'skip'
@@ -72,8 +74,7 @@ export interface ReviewState {
   exception: { kind: 'recoverable' | 'blocked'; taskId: string; summary: string } | null
 }
 declare module '@deepseek-ai/dsh-session-projection' {
-  interface SessionProjectionStateMap { claudeCompletionReview: ReviewState }
-}
+  }
 const taskSchema = z.object({
   taskType: z.enum(['execution','opinion']).default('execution'),
   id: z.string().trim().min(1).max(40).regex(/^[A-Za-z0-9_-]+$/), title: z.string().trim().min(1).max(200),
@@ -148,43 +149,14 @@ const gaps: Record<LayaGap, string> = {
 }
 // A missing routing/checklist declaration is a protocol error, not unlimited quality repair.
 const PROTOCOL_ROUND_LIMIT = 2
+function boundedReceipt(value: string): string {
+  if (value.length <= 900) return value
+  return value.slice(0, 300) + '\n[receipt truncated]\n' + value.slice(-500)
+}
 function textOf(content: readonly ContentBlock[]): string {
   return content.flatMap(block => block.type === 'text' ? [block.text] : []).join('\n')
 }
-function digest(value: unknown): string { return createHash('sha256').update(JSON.stringify(value)).digest('hex') }
-function fingerprint(task: LayaTaskItem, receipts: Record<string, string>): string {
-  return digest({ task: { id: task.id, title: task.title, requirement: task.requirement, status: task.status,
-    result: task.result, evidenceIds: task.evidenceIds, dependsOn: task.dependsOn ?? [], affectedPaths: task.affectedPaths ?? [],
-    critical: task.critical ?? false,...task.taskType==='opinion'?{taskType:'opinion'}:{} }, receipts: task.evidenceIds.map(id => [id, receipts[id] ?? null]) })
-}
-function displayedItems(state: ReviewState, threshold: number): LayaTaskAssessment[] {
-  return state.tasks.map((task) => {
-    const key = fingerprint(task, state.receipts), old = state.assessments[task.id]
-    return old?.fingerprint === key ? { ...old, reused: true,
-      passed: old.score !== null && old.score.rate * 100 >= threshold
-        && (task.critical !== true || old.score.criticalSatisfied === true) } : { ...task, fingerprint: key, score: null,
-      passed: false, reason: task.status === 'completed' ? 'Awaiting item assessment.' : 'This task is not completed.', reused: false }
-  })
-}
-function expandAffected(tasks: readonly LayaTaskItem[], ids: readonly string[]): Set<string> {
-  return new Set(ids)
-}
-function normalizedPath(path: string): string { return path.replace(/\\/g, '/').replace(/^\.\//, '') }
-function dirtyItems(state: ReviewState): Set<string> {
-  if (state.dirtyPathsIncomplete) return expandAffected(state.tasks, Object.keys(state.assessments))
-  const ids = state.tasks.filter(task => state.assessments[task.id] !== undefined && (task.affectedPaths ?? []).some((path) => {
-    const tracked = normalizedPath(path)
-    return state.dirtyPaths.some((value) => {
-      const changed = normalizedPath(value)
-      return tracked === changed || tracked.endsWith('/' + changed) || changed.endsWith('/' + tracked)
-    })
-  })).map(task => task.id)
-  return expandAffected(state.tasks, ids)
-}
-function reopen(tasks: readonly LayaTaskItem[], ids: ReadonlySet<string>): LayaTaskItem[] {
-  return tasks.map(task => ids.has(task.id) ? { ...task, status: 'pending', result: '', evidenceIds: [] } : task)
-}
-function definition(config: ClaudeLoopAlignmentConfig): ProjectionDefinition<'claudeCompletionReview'> {
+function definition(config: ClaudeLoopAlignmentConfig): ProjectionDefinition<'claudeCompletionReview', ReviewState> {
   const empty = (): ReviewState => ({ jobId:null,pendingRequirement:'',pendingContext:false,threshold:config.layaReviewThreshold.get(),turn: -1, repairs: 0, instructed: false, taskKind: null, reviewMode: null, routingReason: '', contextRequirement: '',
     previousRequirement: '', previousRequirementIncomplete: false, previousWork: null, requirement: '', requirementIncomplete: false, requiresContextInterpretation: false,
     output: '', outputIncomplete: false, outputSeq: null, calls: {}, receipts: {}, dirtyPaths: [], dirtyPathsIncomplete: false, tasks: [], taskRequirement: '',
@@ -192,7 +164,7 @@ function definition(config: ClaudeLoopAlignmentConfig): ProjectionDefinition<'cl
   return { key: 'claudeCompletionReview', stateVersion: 8, stateSchema, init: empty,
     apply(state, event) {
       const record=readJobRecord(event)
-      if(record){const job=record;if(job.jobId!==null&&job.jobId!==state.jobId)return {...empty(),turn:state.turn,jobId:job.jobId,threshold:job.threshold,...job.inputTurn===state.turn?{requirement:state.pendingRequirement.slice(0,config.layaReviewRequirementCharacters),requiresContextInterpretation:state.pendingContext,requirementIncomplete:state.pendingRequirement.length>config.layaReviewRequirementCharacters}:{}};return state}
+      if(record){const job=record.job??record.delta;const jobId=job?.jobId;if(jobId!==undefined&&jobId!==null&&jobId!==state.jobId)return {...empty(),turn:state.turn,jobId,threshold:job?.threshold??state.threshold,...(job?.inputTurn??-1)===state.turn?{requirement:state.pendingRequirement.slice(0,config.layaReviewRequirementCharacters),requiresContextInterpretation:state.pendingContext,requirementIncomplete:state.pendingRequirement.length>config.layaReviewRequirementCharacters}:{}};return state}
       switch (event.type) {
         case 'turn/start': if(state.jobId!==null)return {...state,turn:event.data.turn,pendingRequirement:'',pendingContext:false,output:'',outputSeq:null,outputIncomplete:false,instructed:false}
           return { ...empty(), turn: event.data.turn, reviews: state.reviews,
@@ -204,6 +176,10 @@ function definition(config: ClaudeLoopAlignmentConfig): ProjectionDefinition<'cl
               assessments: state.assessments, receipts: state.receipts, exception: state.exception } : state.previousWork }
         case 'user/message': {
           const source = event.data.source
+          if(source.kind==='long-task-supplement'){
+            const text=event.data.content.filter(block=>block.type==='text').map(block=>block.text).join(' ').trim()
+            return text===''?state:{...state,requirement:(state.requirement+'\n\n'+text).slice(0,config.layaReviewRequirementCharacters)}
+          }
           if(source.kind==='long-task-state'&&source.job&&typeof source.job==='object'&&'jobId' in source.job){
             const job=source.job as {jobId:string|null;threshold:number}
             if(job.jobId!==null&&job.jobId!==state.jobId)return {...empty(),turn:state.turn,jobId:job.jobId,threshold:job.threshold}
@@ -300,18 +276,29 @@ class CompletionReviewBlockedError extends Error {
 
 /** The primary model owns the plan; Laya supplies optional independent judgments through the existing MCP connection. */
 export class CompletionReviews extends Service {
+ /** Commands approved for the current job; one confirmation covers every assessment of that command. */
+ private readonly approvedChecks=new WeakMap<Agent,{jobId:string;commands:Set<string>}>()
+ private handle?: ProjectionHandle<ReviewState>
   static inject = ['sessions', 'sessionProjections']
   /** @param ctx - owning plugin context. @param config - validated loop configuration. */
   constructor(ctx: Context, private readonly config: ClaudeLoopAlignmentConfig) {
     super(ctx, 'claudeCompletionReviews')
-    ctx.sessionProjections.register(definition(config))
+    void this.initProjection()
+  }
+  /** Register the durable review projection and retain its reader. */
+  private async initProjection(): Promise<void> {
+    this.handle = await this.ctx.sessionProjections.register(definition(this.config))
+  }
+  /** @param session - session whose review projection is read. @returns the current review state, when registered. */
+  reviewOf(session: import('@deepseek-ai/dsh-session').Session): ReviewState | undefined {
+    return this.handle?.stateOf(session)
   }
   /**
    * Read Laya history without presenting primary-model self reports as Laya judgments.
    * @returns recent Laya decisions, newest first.
    */
   list(): LayaCompletionReview[] {
-    return this.ctx.sessions.list().flatMap(session => this.ctx.sessionProjections.stateOf(session, 'claudeCompletionReview')?.reviews ?? [])
+    return this.ctx.sessions.list().flatMap(session => this.handle?.stateOf(session)?.reviews ?? [])
       .filter(review => review.reviewer !== 'primary').sort((a, b) => b.at - a.at).slice(0, this.config.layaReviewHistoryEntries)
   }
   /**
@@ -336,7 +323,7 @@ export class CompletionReviews extends Service {
     return this.ctx.get('longTasks')?.active(agent) === true && agent.session.header.origin !== 'subagent' && (agent.session.header.delegationDepth ?? 0) === 0
   }
   private state(agent: Agent): ReviewState {
-    const state = this.ctx.sessionProjections.stateOf(agent.session, 'claudeCompletionReview')
+    const state = this.handle?.stateOf(agent.session)
     if (state === undefined) throw this.blocked('The task projection is unavailable.')
     return state
   }
@@ -408,6 +395,9 @@ export class CompletionReviews extends Service {
     if(!this.primary(agent))return null
     const state=this.state(agent),job=this.ctx.longTasks.state(agent.session)
     if(state.instructed)return null
+    if(job.mode==='long'&&(job.phase==='paused'||job.phase==='blocked')&&!_messages.some(message=>message.content.some(block=>block.type==='text'&&isResumeIntent(block.text))))
+      return createUserMessage({source:{kind:'laya-task-protocol',form:'notice',summary:'Long task paused'},
+        content:[{type:'text',text:`The long task is paused: ${job.reason||'waiting for the user'}. Tell the user the current state and the next step. Reply "继续" or "continue" to resume, or end the task from the task menu. Do not run tools or claim progress.`}]})
     const header='The user selected Long Task Mode. The host owns the durable job and freezes the independent-acceptance switch for this job. '
     const branch=job.route==='pending'
       ?'First analyze the actual human request. Declare loop_tasks({kind:"coding" or "non_coding",reason:"your semantic justification"}) before execution. This decision is whether the request concerns code, not whether it is simple or complex. Implementation, debugging, code reading and code review are coding; pure chat, writing and non-code research are non_coding. Do not call Laya/Jev for classification. Non-code work answers normally without a mandatory plan or acceptance. For code the host chooses independent acceptance or primary self-review from the saved user switch. '
@@ -419,7 +409,7 @@ export class CompletionReviews extends Service {
         :'This is non-code work with independent acceptance. Create plan.md in the exact returned claude-loop-plan/v1 format using taskType opinion items, import planPath, then submit taskUpdate for each item for the selected reviewer. Opinion items need no execution receipts. ')
       :!job.reviewEnabled
       ?'Independent acceptance is disabled for this code job. Declare an ordinary ordered plan via loop_tasks.tasks, execute it and submit explicit selfReview for each completed item, then the overall final candidate. A fixed plan.md is not required. Do not call Laya/Jev or label self-review as independent approval. '
-      :'Independent acceptance is enabled for this code job. First create plan.md in the exact returned claude-loop-plan/v1 format and import planPath. It defines overall goal, scope, fixed task IDs, dependencies, deliverables, evidence, exception and revision rules. Execution tasks declare real affectedPaths and receipts. The selected Laya/Jev reviewer assesses only the current item, then the overall request. Before a valid plan, only reads/searches and writing plan.md (or restricted planning run_code) are allowed. Recoverable errors retry within budget; record plan changes with reason and affected IDs; blockers pause explicitly. '
+      :'Independent acceptance is enabled for this code job. First create plan.md in the exact returned claude-loop-plan/v1 format and import planPath. It defines overall goal, scope, fixed task IDs, dependencies, deliverables, evidence, exception and revision rules. Execution tasks declare real affectedPaths and receipts. The selected Laya/Jev reviewer assesses only the current item, then the overall request. Plan implementation first: every execution task must change code or files, or run a real verification command. Do not create a diagnosis-only execution task; record analysis in the item result or declare it as an opinion task. Before a valid plan, only reads/searches and writing plan.md (or restricted planning run_code) are allowed. Recoverable errors retry within budget; record plan changes with reason and affected IDs; blockers pause explicitly. '
     const shared='Read loop_tasks for the saved route, currentTaskId, receipts and plan template. Continue the same unfinished job across compaction and turns; never resend approved items. Submit taskUpdate only for the current item; preserve earlier results, evidence, scores and criteria. Changed accepted files require separate targeted revalidation with reasons. No automatic fallback, threshold reductions, permission changes or unrequested external actions.'
     return createUserMessage({source:{kind:'laya-task-protocol',form:'notice',summary:'Long task routing and plan protocol'},content:[{type:'text',text:header+branch+shared}]})
   }
@@ -474,7 +464,7 @@ export class CompletionReviews extends Service {
       resume: { type: 'boolean', description: 'For a coding continuation, include the preceding coding requirement.' },
       view: { type: 'string', enum: ['summary', 'full'], description: 'Default summary: current item, progress and recent receipts. full: all retained requirements, tasks, plan, scores and receipts; use after context loss or to inspect other items.' },
       receiptIds: { type: 'array', items: { type: 'string' }, description: 'Up to eight receipt IDs to read in full; otherwise brief excerpts.' },
-      invalidateTaskIds: { type: 'array', items: { type: 'string' }, description: 'Approved items affected by shared-code changes; dependencies also reopen.' },
+      invalidateTaskIds: { type: 'array', items: { type: 'string' }, description: 'Approved items affected by shared-code changes; only the named items reopen, so include every dependent item explicitly.' },
       tasks: { type: 'array', description: 'Declare the full ordered plan in self mode; legacy full-list progress remains accepted. Approved items are immutable unless explicitly invalidated. Prefer taskUpdate for progress.', items: {
         type: 'object', additionalProperties: false, properties: {
           id: { type: 'string', required: true }, title: { type: 'string', required: true },
@@ -679,6 +669,7 @@ export class CompletionReviews extends Service {
         }), { surfaceOp: 'append' })
       }
       state = this.state(agent)
+      if (imported !== undefined && this.config.confirmPlan.get()) await this.ctx.longTasks.awaitPlanConfirmation(agent)
       if (restored !== null) this.record(agent, 'tasks', displayedItems(state, state.threshold), null, 'progress', [])
       if (args.selfReview !== undefined) {
         this.selfAssess(agent, selfReviewSchema.parse(args.selfReview))
@@ -754,18 +745,47 @@ export class CompletionReviews extends Service {
    * for repair without consuming an assessment; infrastructure problems throw instead.
    * @returns check output lines for the reviewer, or null when a check failed.
    */
+  /** Shell/approval-backed runner; direct execution remains only when the composition has no shell service. */
+  private checkRunner(agent: Agent): CheckRunner {
+    const shell = this.ctx.get('shell')
+    if (shell === undefined) return directCheckRunner
+    const approval = this.ctx.get('approval')
+    const jobId = this.ctx.longTasks.state(agent.session).jobId ?? ''
+    let cached = this.approvedChecks.get(agent)
+    if (cached?.jobId !== jobId) { cached = { jobId, commands: new Set() }; this.approvedChecks.set(agent, cached) }
+    const approved = cached.commands
+    return async (command, cwd, signal) => {
+      if (approval === undefined) return { command, exitCode: null, output: '[check denied: approval service unavailable]', timedOut: false, denied: 'unavailable' }
+      const policy = approval.overrideOf(agent.session) ?? approval.config?.policy ?? 'ask'
+      // A stricter policy takes effect immediately; it does not reuse an earlier confirmation.
+      if (policy === 'never') return { command, exitCode: null, output: '[check denied: approval policy is never]', timedOut: false, denied: 'never' }
+      if (!approved.has(command)) {
+        if (policy === 'ask') {
+          const outcome = await approval.request({ agent, toolName: 'bash', reason: `Long-task plan check: ${command}`, signal })
+          if (outcome !== 'allowed-once') return { command, exitCode: null, output: `[check denied: ${String(outcome)}]`, timedOut: false, denied: String(outcome) }
+        }
+        approved.add(command)
+      }
+      const execution = await shell.execute(shell.resolve({ command, workdir: cwd, timeoutMs: 60000, signal, env: checkEnvironment(), stdoutMaxBytes: 1024 * 1024, onExpiry: 'kill' }))
+      const result = await execution.result()
+      const raw = (result.stdout?.text ?? '') + (result.stderr?.text ?? '')
+      return { command, exitCode: result.exitCode ?? null,
+        output: raw.slice(0, CHECK_OUTPUT_LIMIT) + (raw.length > CHECK_OUTPUT_LIMIT ? '\n[output truncated]' : ''), timedOut: result.timedOut }
+    }
+  }
   private async runItemChecks(agent: Agent, item: LayaTaskAssessment, signal: AbortSignal): Promise<string[] | null> {
     const commands = item.checks ?? []
     if (commands.length === 0) return []
     const cwd = agent.session.header.cwd
     if (!cwd) throw new Error('任务缺少工作目录，无法运行 plan.md 声明的确定性检查。')
-    const results = await runChecks(cwd, commands, signal)
-    const lines = results.map(result => `[check] ${result.command} → exit ${result.exitCode ?? (result.timedOut ? 'timeout' : 'signal')}\n${result.output}`)
+    const results = await runChecks(cwd, commands, signal, this.checkRunner(agent))
+    const label = (result: { command: string; exitCode: number | null; timedOut: boolean; denied?: string }) => result.denied !== undefined ? `denied (${result.denied})` : `exit ${result.exitCode ?? (result.timedOut ? 'timeout' : 'signal')}`
+    const lines = results.map(result => `[check] ${result.command} → ${label(result)}\n${result.output}`)
     const failed = results.filter(result => result.exitCode !== 0)
     if (failed.length === 0) return lines
     const state = this.state(agent), items = displayedItems(state, state.threshold)
     const index = items.findIndex(value => value.id === item.id)
-    const reason = 'Deterministic check failed: ' + failed.map(result => `${result.command} (exit ${result.exitCode ?? 'timeout'})`).join('; ') + '. Repair the deliverable and resubmit.'
+    const reason = 'Deterministic check failed: ' + failed.map(result => `${result.command} (${label(result)})`).join('; ') + '. Repair the deliverable and resubmit.'
     if (index >= 0) {
       items[index] = { ...items[index]!, passed: false, reason }
       this.ctx.longTasks.verdict(agent, false)
@@ -791,8 +811,13 @@ export class CompletionReviews extends Service {
     const cited = item.evidenceIds.map(id => state.receipts[id] ?? '[unavailable]')
     const code = this.codeAllowed(agent) && (item.affectedPaths?.length ?? 0) > 0
       ? await codeEvidence(agent.session.header.cwd ?? '', item.affectedPaths ?? [], signal) : ''
-    return ['Self-reported completion is not independent evidence.', ...cited, ...checkEvidence,
-      ...this.autoReceipts(state, item.evidenceIds), ...(code === '' ? [] : ['[Host-collected deliverable evidence]\n' + code])]
+    const checks = this.codeAllowed(agent) ? checkEvidence
+      : checkEvidence.map(line => line.split('\n')[0] + '\n[check output withheld by code-evidence policy]')
+    // Highest-signal evidence first: deterministic checks, then the deliverable diff, then citations,
+    // then host-added receipts. Receipts are compressed so the 6000-byte budget reaches the diff.
+    return ['Self-reported completion is not independent evidence.', ...checks,
+      ...(code === '' ? [] : ['[Host-collected deliverable evidence]\n' + code]),
+      ...cited.map(boundedReceipt), ...this.autoReceipts(state, item.evidenceIds)]
   }
   /** Overall evidence: per-item summaries, uncited recent receipts and bounded deliverable evidence. */
   private async overallEvidence(agent: Agent, state: ReviewState, items: readonly LayaTaskAssessment[], signal: AbortSignal): Promise<string[]> {
@@ -806,6 +831,8 @@ export class CompletionReviews extends Service {
   }
   private async assessItem(agent: Agent, id: string, signal: AbortSignal): Promise<void> {
     await this.ctx.longTasks.before(agent,signal)
+    // Scoring must see the current bytes even when this turn was already verified at its first step.
+    await this.ctx.longTasks.verifyChanges(agent,signal)
     this.ctx.longTasks.assertUnchanged(agent)
     const issue = await this.checkPlan(agent, signal)
     if (issue !== null) throw this.blocked(issue)
@@ -911,6 +938,8 @@ export class CompletionReviews extends Service {
     if (!this.primary(agent)) return false
     signal.throwIfAborted()
     await this.ctx.longTasks.before(agent,signal)
+    // Scoring must see the current bytes even when this turn was already verified at its first step.
+    await this.ctx.longTasks.verifyChanges(agent,signal)
     this.ctx.longTasks.assertUnchanged(agent)
     let state = this.reconcile(agent)
     if (state.turn !== turn) throw this.blocked('Task state does not match this turn.')

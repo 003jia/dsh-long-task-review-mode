@@ -1,15 +1,11 @@
-/** Durable session-bound jobs; the session journal owns persistence, independent of chat compression. */
 import { type Context, Service } from '@deepseek-ai/cordis';
 import { TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol';
 import type { Agent } from '@deepseek-ai/dsh-agent';
 import { type Session } from '@deepseek-ai/dsh-session';
 import type { LayaCompletionRequest, LayaCompletionScore, LayaTaskAssessment } from './laya/types.ts';
 import type { Config } from './index.ts';
-import { type JobState, type Snapshot, type Request, type Acceptance, type BudgetLimits } from './wire.ts';
+import { type JobState, type JobDelta, type Snapshot, type Request, type Acceptance, type BudgetLimits } from './wire.ts';
 declare module '@deepseek-ai/dsh-session-projection' {
-    interface SessionProjectionStateMap {
-        'long-task-job': JobState;
-    }
     interface SessionProjectionMap {
         'long-task-job': JobState;
     }
@@ -19,6 +15,8 @@ declare module '@deepseek-ai/cordis' {
         longTasks: LongTasks;
     }
 }
+/** Top-level fields that changed between two job states; identity fields always travel with a delta. */
+export declare function jobDelta(previous: JobState, next: JobState): Partial<JobState>;
 export declare class LongTasks extends TypertRemoteService {
     private config;
     static inject: string[];
@@ -26,6 +24,10 @@ export declare class LongTasks extends TypertRemoteService {
     private seenSessions;
     private masks;
     private turnJobs;
+    private verifiedTurn;
+    private jobsHandle?;
+    private readonly lastWritten;
+    private readonly writeCounts;
     private writes;
     constructor(ctx: Context, config: Config);
     [Service.init](): AsyncGenerator<() => void, void, void>;
@@ -45,6 +47,8 @@ export declare class LongTasks extends TypertRemoteService {
     active(agent: Agent): boolean;
     update(session: Session, job: JobState): void;
     pause(agent: Agent, reason: string): void;
+    /** Re-read accepted deliverables and publish detected changes. Safe to call before scoring or once per turn. */
+    verifyChanges(agent: Agent, signal: AbortSignal): Promise<void>;
     before(agent: Agent, signal: AbortSignal): Promise<void>;
     revalidate(agent: Agent, ids: string[], reason: string): void;
     assertUnchanged(agent: Agent): void;
@@ -56,6 +60,7 @@ export declare class LongTasks extends TypertRemoteService {
     verdict(agent: Agent, passed: boolean): void;
     completed(agent: Agent): void;
     snapshot(id?: string): Promise<Snapshot>;
+    awaitPlanConfirmation(agent: Agent): Promise<void>;
     request(raw: Request): Promise<Snapshot>;
     private dispatch;
 }
@@ -67,10 +72,15 @@ declare module '@deepseek-ai/dsh-llm' {
             summary: string;
             job: JobState;
         };
+        'long-task-supplement': {
+            kind: 'long-task-supplement';
+            form: 'notice';
+            summary: string;
+        };
     }
 }
 declare module '@deepseek-ai/dsh-session/types' {
     interface PluginRecordMap {
-        'plugin:long-task/state': JobState;
+        'plugin:long-task/state': JobState | JobDelta;
     }
 }

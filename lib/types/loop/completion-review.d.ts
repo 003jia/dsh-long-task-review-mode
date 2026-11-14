@@ -63,16 +63,20 @@ export interface ReviewState {
     } | null;
 }
 declare module '@deepseek-ai/dsh-session-projection' {
-    interface SessionProjectionStateMap {
-        claudeCompletionReview: ReviewState;
-    }
 }
 /** The primary model owns the plan; Laya supplies optional independent judgments through the existing MCP connection. */
 export declare class CompletionReviews extends Service {
     private readonly config;
+    /** Commands approved for the current job; one confirmation covers every assessment of that command. */
+    private readonly approvedChecks;
+    private handle?;
     static inject: string[];
     /** @param ctx - owning plugin context. @param config - validated loop configuration. */
     constructor(ctx: Context, config: ClaudeLoopAlignmentConfig);
+    /** Register the durable review projection and retain its reader. */
+    private initProjection;
+    /** @param session - session whose review projection is read. @returns the current review state, when registered. */
+    reviewOf(session: import('@deepseek-ai/dsh-session').Session): ReviewState | undefined;
     /**
      * Read Laya history without presenting primary-model self reports as Laya judgments.
      * @returns recent Laya decisions, newest first.
@@ -123,6 +127,8 @@ export declare class CompletionReviews extends Service {
      * for repair without consuming an assessment; infrastructure problems throw instead.
      * @returns check output lines for the reviewer, or null when a check failed.
      */
+    /** Shell/approval-backed runner; direct execution remains only when the composition has no shell service. */
+    private checkRunner;
     private runItemChecks;
     /** Receipts recorded after the cited ones, so later failures cannot hide behind an early pass. */
     private autoReceipts;

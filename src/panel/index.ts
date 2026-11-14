@@ -26,13 +26,13 @@ export const Config = schema.object({
  * @param ctx - host context with session projections.
  * @param config - validated plugin configuration.
  */
-export function apply(ctx: Context, config: Config): void {
-  ctx.sessionProjections.register({
+export async function apply(ctx: Context, config: Config): Promise<void> {
+  await ctx.sessionProjections.register({
     key: 'claude-loop-flow', stateSchema: loopFlowSchema, stateVersion: 5,
     init: emptyLoopFlow, apply: (state, event) => foldLoopFlow(state, event, config.maxSteps, config.maxReviews),
     wire: { viewSchema: loopFlowSchema, view: state => state },
   })
-  ctx.sessionProjections.register({
+  await ctx.sessionProjections.register({
     key: 'claude-loop-tool-usage', stateSchema: toolUsageStateSchema, stateVersion: 1,
     init: emptyToolUsage, apply: foldToolUsage,
     wire: { viewSchema: toolUsageViewSchema, view: toolUsageView },

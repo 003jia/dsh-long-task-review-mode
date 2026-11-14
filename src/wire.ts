@@ -5,7 +5,7 @@ import type { RemoteResult, TypertRemoteContribution, TypertRemoteNamespace } fr
 export const PACKAGE='@deepseek-ai/dsh-long-task'
 /** Existing Claude Loop controls, independent of long-task acceptance history. */
 export const loopSettingsSchema=z.object({
- deferMcpTools:z.boolean(),maxToolTurns:z.number().int().min(0).max(100000),
+ deferMcpTools:z.boolean(),confirmPlan:z.boolean(),maxToolTurns:z.number().int().min(0).max(100000),
  snipAtRatio:z.number().min(0).max(1),compactAtRatio:z.number().min(0).max(1),
  turnTokenBudget:z.number().int().min(0).max(1000000000),budgetCompletionRatio:z.number().min(0).max(1),
  budgetDiminishingDelta:z.number().int().min(0).max(1000000000),maxTokensRecoveryLimit:z.number().int().min(0).max(1000),
@@ -18,7 +18,8 @@ export const requestSchema=z.discriminatedUnion('op',[
   z.object({op:z.literal('status'),sessionId:z.string().min(1).max(200)}).strict(),
   z.object({op:z.enum(['long','ordinary','pause','resume','end','new','acknowledge']),sessionId:z.string().min(1).max(200)}).strict(),
   z.object({op:z.literal('settings')}).strict(),
-  z.object({op:z.literal('saveReviewPolicy'),enabled:z.boolean(),nonCodingMode:z.enum(['direct','selfCheck','independent']).optional()}).strict(),
+  z.object({op:z.literal('saveReviewPolicy'),enabled:z.boolean(),nonCodingMode:z.enum(['direct','selfCheck','independent']).optional(),confirmPlan:z.boolean().optional()}).strict(),
+ z.object({op:z.literal('supplement'),sessionId:z.string(),text:z.string().trim().min(1).max(4000)}).strict(),
   z.object({op:z.literal('saveReviewer'),reviewer:reviewerSettingsSchema,apiKey:z.string().trim().min(1).max(4096).optional()}).strict(),
   z.object({op:z.literal('testReviewer'),backend:z.enum(['laya','jev'])}).strict(),
   z.object({op:z.literal('cancelReviewerTest')}).strict(),
@@ -33,8 +34,10 @@ export interface Acceptance {jobId:string;taskId:string;at:number;fingerprint:st
 export interface BudgetLimits{toolCalls:number;minutes:number;modelTokens:number;cost:number;assessments:number;noProgress:number}
 /** Per-job budget: creation snapshot plus operator extensions. Null means a legacy job that follows live settings. */
 export interface JobBudget{limits:BudgetLimits;extra:Partial<BudgetLimits>;warned80:boolean}
-export interface JobState {route:'pending'|'coding'|'non_coding';routingReason:string;reviewEnabled:boolean;nonCodingMode:'direct'|'selfCheck'|'independent';inputTurn:number|null;reviewer:ReviewerSelection|null;resolvedReviewerModel:string|null;resumeRequested:boolean;mode:'ordinary'|'long';jobId:string|null;cwd:string;phase:'idle'|'active'|'paused'|'blocked'|'done'|'ended';reason:string;startedAt:number;elapsedMs:number;activeSince:number;threshold:number;inputTokens:number;outputTokens:number;usageUnknown:boolean;toolCalls:number;assessments:number;noProgress:number;lastProgress:string;acceptances:Acceptance[];changes:{taskId:string;paths:string[];reason:string}[];revalidating:string[];pendingCalls:string[];history:{jobId:string;phase:string;at:number}[];budget:JobBudget|null}
-export interface Snapshot {reviewer:ReviewerView;loop:LoopSettings;job:JobState|null;laya:{phase:string;error:string|null};settings:{independentReview:boolean;nonCodingMode:'direct'|'selfCheck'|'independent';maxModelTokens:number;maxCost:number;inputPerMillion:number;outputPerMillion:number;threshold:number;noProgressLimit:number;maxToolCalls:number;maxAssessments:number;maxMinutes:number};planPath:string|null;currentTaskId:string|null;tasks:{id:string;title:string;passed:boolean}[]}
+export interface JobState {route:'pending'|'coding'|'non_coding';planConfirmed:boolean;planAwaitingConfirmation:boolean;routingReason:string;reviewEnabled:boolean;nonCodingMode:'direct'|'selfCheck'|'independent';inputTurn:number|null;reviewer:ReviewerSelection|null;resolvedReviewerModel:string|null;resumeRequested:boolean;mode:'ordinary'|'long';jobId:string|null;cwd:string;phase:'idle'|'active'|'paused'|'blocked'|'done'|'ended';reason:string;startedAt:number;elapsedMs:number;activeSince:number;threshold:number;inputTokens:number;outputTokens:number;usageUnknown:boolean;toolCalls:number;assessments:number;noProgress:number;lastProgress:string;acceptances:Acceptance[];changes:{taskId:string;paths:string[];reason:string}[];revalidating:string[];pendingCalls:string[];history:{jobId:string;phase:string;at:number}[];budget:JobBudget|null}
+/** Incremental job-record envelope; a plain JobState remains a full snapshot. */
+export interface JobDelta {v:2;delta:Partial<JobState>}
+export interface Snapshot {reviewer:ReviewerView;loop:LoopSettings;job:JobState|null;laya:{phase:string;error:string|null};settings:{independentReview:boolean;confirmPlan:boolean;nonCodingMode:'direct'|'selfCheck'|'independent';maxModelTokens:number;maxCost:number;inputPerMillion:number;outputPerMillion:number;threshold:number;noProgressLimit:number;maxToolCalls:number;maxAssessments:number;maxMinutes:number};planPath:string|null;currentTaskId:string|null;tasks:{id:string;title:string;passed:boolean}[]}
 export const remoteContribution:TypertRemoteContribution={package:PACKAGE,descriptors:[{
  id:`${PACKAGE}#longTasks/request`,service:'longTasks',namespace:'longTasks',method:'request',invocation:{kind:'direct'},
  parameters:[{name:'request',wire:'request',source:'json',codec:{mode:'strict',typeSymbol:`${PACKAGE}#Request`,create:()=>requestSchema}}],result:{mode:'src-json'},

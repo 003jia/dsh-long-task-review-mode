@@ -24,4 +24,4 @@ export declare const Config: schema<Schemastery.ObjectS<NoInfer<{
  * @param ctx - host context with session projections.
  * @param config - validated plugin configuration.
  */
-export declare function apply(ctx: Context, config: Config): void;
+export declare function apply(ctx: Context, config: Config): Promise<void>;

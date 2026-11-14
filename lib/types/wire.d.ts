@@ -6,6 +6,7 @@ export declare const PACKAGE = "@deepseek-ai/dsh-long-task";
 /** Existing Claude Loop controls, independent of long-task acceptance history. */
 export declare const loopSettingsSchema: z.ZodObject<{
     deferMcpTools: z.ZodBoolean;
+    confirmPlan: z.ZodBoolean;
     maxToolTurns: z.ZodNumber;
     snipAtRatio: z.ZodNumber;
     compactAtRatio: z.ZodNumber;
@@ -47,6 +48,11 @@ export declare const requestSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
         selfCheck: "selfCheck";
         independent: "independent";
     }>>;
+    confirmPlan: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$strict>, z.ZodObject<{
+    op: z.ZodLiteral<"supplement">;
+    sessionId: z.ZodString;
+    text: z.ZodString;
 }, z.core.$strict>, z.ZodObject<{
     op: z.ZodLiteral<"saveReviewer">;
     reviewer: z.ZodObject<{
@@ -72,6 +78,7 @@ export declare const requestSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     op: z.ZodLiteral<"saveLoop">;
     loop: z.ZodObject<{
         deferMcpTools: z.ZodBoolean;
+        confirmPlan: z.ZodBoolean;
         maxToolTurns: z.ZodNumber;
         snipAtRatio: z.ZodNumber;
         compactAtRatio: z.ZodNumber;
@@ -148,6 +155,8 @@ export interface JobBudget {
 }
 export interface JobState {
     route: 'pending' | 'coding' | 'non_coding';
+    planConfirmed: boolean;
+    planAwaitingConfirmation: boolean;
     routingReason: string;
     reviewEnabled: boolean;
     nonCodingMode: 'direct' | 'selfCheck' | 'independent';
@@ -186,6 +195,11 @@ export interface JobState {
     }[];
     budget: JobBudget | null;
 }
+/** Incremental job-record envelope; a plain JobState remains a full snapshot. */
+export interface JobDelta {
+    v: 2;
+    delta: Partial<JobState>;
+}
 export interface Snapshot {
     reviewer: ReviewerView;
     loop: LoopSettings;
@@ -196,6 +210,7 @@ export interface Snapshot {
     };
     settings: {
         independentReview: boolean;
+        confirmPlan: boolean;
         nonCodingMode: 'direct' | 'selfCheck' | 'independent';
         maxModelTokens: number;
         maxCost: number;

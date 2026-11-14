@@ -17,7 +17,9 @@ type ToggleProps = PropsRuntime<'conversation.session.header.utilities'> & Props
 const terminalPhases: readonly LoopPhase[] = ['done', 'aborted', 'blocked', 'error', 'limited', 'interrupted']
 
 /** Header entry sharing the session's panel visibility preference. */
-export function LoopToggle({ openLoop, t }: ToggleProps) {
+export function LoopToggle({ openLoop, t, useProjection }: ToggleProps) {
+  const job = useProjection('long-task-job')
+  if (!job?.jobId) return null
   return <button className={css.toggle} type="button" onClick={openLoop}
     aria-label={t('toggle')} title={t('toggle')} data-loop-toggle>
     <span aria-hidden="true">↻</span><span>{t('loopLabel')}</span>

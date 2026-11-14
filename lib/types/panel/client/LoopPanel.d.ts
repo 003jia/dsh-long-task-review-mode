@@ -8,7 +8,7 @@ export interface LoopOpenInjected {
 type PanelProps = PropsRuntime<'sidebar.right.pane.tab'> & PropsLocale<'loopFlow'>;
 type ToggleProps = PropsRuntime<'conversation.session.header.utilities'> & PropsLocale<'loopFlow'> & InjectFace<LoopOpenInjected>;
 /** Header entry sharing the session's panel visibility preference. */
-export declare function LoopToggle({ openLoop, t }: ToggleProps): import("react").JSX.Element;
+export declare function LoopToggle({ openLoop, t, useProjection }: ToggleProps): import("react").JSX.Element | null;
 /** Session sidebar entry; no subscription or execution machinery lives in this component. */
 export declare function LoopPanel({ sessionId, useProjection, useSession, useSessionStatus, useTabInfo, t }: PanelProps): import("react").JSX.Element;
 export {};

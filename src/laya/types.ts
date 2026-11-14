@@ -58,11 +58,6 @@ export interface LayaCompletionRequest {
     /** Require independent confirmation that all mandatory criteria have evidence. */
     critical?: boolean | undefined;
 }
-/** Task-type gate decision for one checklist item. */
-export interface LayaTaskClassification {
-    type: 'execution' | 'opinion';
-    confidence: number;
-}
 /** A stable task requirement; model completion is separate from Laya approval. */
 export interface LayaTaskItem {
  taskType?: 'execution'|'opinion';
@@ -98,6 +93,16 @@ export interface LayaCompletionScore {
     gap?: LayaGap | undefined;
     /** Binary confirmation of mandatory requirements, requested only for critical work. */
     criticalSatisfied?: boolean | undefined;
+    /** UTF-8 bytes of the first assembled input. */
+    inputBytes?: number | undefined;
+    /** Evidence entries submitted for this assessment. */
+    evidenceTotal?: number | undefined;
+    /** Evidence entries that survived the input budget. */
+    evidenceIncluded?: number | undefined;
+    /** Evidence entries dropped or cleared by the input budget. */
+    evidenceDropped?: number | undefined;
+    /** Whether any evidence was excerpted with the not-verified marker. */
+    evidenceExcerpted?: boolean | undefined;
 }
 /** Per-item judgment retained with the exact requirement and submitted evidence references. */
 export interface LayaTaskAssessment extends LayaTaskItem {
@@ -150,22 +155,15 @@ export interface LayaCompletionEvaluator {
      * @returns ordinal completion estimates, distinct from confidence.
      */
     evaluateCompletion(request: LayaCompletionRequest, signal: AbortSignal): Promise<LayaCompletionScore>;
-    /**
-     * Classify one checklist item before its assessment so opinion items are judged on content
-     * rather than execution receipts.
-     * @param request - item title and requirement.
-     * @param signal - caller cancellation.
-     * @returns task type with the choice confidence; `execution` is the fail-safe default.
-     */
-    classifyTask(request: {
-        title: string;
-        requirement: string;
-    }, signal: AbortSignal): Promise<LayaTaskClassification>;
 }
 /** Completion policy reads its durable projection for loaded sessions. */
+import type {ReviewState} from '../loop/completion-review.ts'
+import type {Session} from '@deepseek-ai/dsh-session'
 export interface LayaCompletionHistory {
     /** @returns bounded recent decisions derived from live session logs. */
     list(): LayaCompletionReview[];
+    /** @param session - session whose review projection is read. @returns its current review state, when registered. */
+    reviewOf(session: Session): ReviewState | undefined;
 }
 declare module '@deepseek-ai/cordis' {
     interface Context {

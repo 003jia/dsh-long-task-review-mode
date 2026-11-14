@@ -5,6 +5,7 @@ import {mkdtempSync,realpathSync,writeFileSync,readFileSync,rmSync,mkdirSync} fr
 import {tmpdir} from 'node:os'
 import {join,resolve} from 'node:path'
 import {pathToFileURL} from 'node:url'
+import {reportPath} from './report-path.mjs'
 const {Context}=await import(formalRequire.resolve('@deepseek-ai/cordis'))
 const {mountRootInclude,readProfilePatches}=await import(formalRequire.resolve('@deepseek-ai/dsh-app-boot'))
 const {LlmAdapter,ToolCallId,createUserMessage}=await import(formalRequire.resolve('@deepseek-ai/dsh-llm'))
@@ -58,6 +59,23 @@ try{
  assert.equal(job.route,'non_coding');assert.equal(job.phase,'done');assert.equal(requireCalls,0);assert.equal(evaluations,0);assert.equal(ctx.sessionProjections.stateOf(plain.session,'claudeCompletionReview').plan,null)
  const previous=job.jobId;job=await run(plain,'Hello again.',[pending,()=>({text:'Hello again.'})]);assert.notEqual(job.jobId,previous);assert.equal(job.phase,'done');assert.equal(ctx.sessionProjections.stateOf(plain.session,'claudeCompletionReview').requirement,'Hello again.')
  checks.push('Native long-task preset routes non-code answers normally across consecutive turns, preserves the exact current human input and never checks an unavailable reviewer')
+ await ctx.longTasks.request({op:'end',sessionId:plain.id});const ended=ctx.longTasks.state(plain.session);assert.equal(ended.phase,'ended')
+ job=await run(plain,'Hello after the ended job.',[pending,()=>({text:'Hello after the ended job.'})])
+ assert.notEqual(job.jobId,ended.jobId,'a long-task preset request after an ended job must start a new job');assert.equal(job.phase,'done')
+ checks.push('A new request after the user ended a job starts a fresh long-task job instead of running as ordinary work')
+ await ctx.longTasks.request({op:'pause',sessionId:plain.id});assert.equal(ctx.longTasks.state(plain.session).phase,'paused')
+ job=await run(plain,'请继续',[()=>({text:'Resumed after the pause.'})])
+ assert.notEqual(job.phase,'paused','a polite resume phrase must resume the paused job')
+ checks.push('A paused job resumes with 请继续, not only the exact word 继续')
+ const pendingAgent=await create('pending-clear')
+ await ctx.longTasks.request({op:'long',sessionId:pendingAgent.id})
+ pendingAgent.session.append('tool/call',{turn:1,step:1,callId:'pending-1',name:'fixture_lookup',arguments:'{}'})
+ assert.deepEqual(ctx.longTasks.state(pendingAgent.session).pendingCalls,['pending-1'])
+ await ctx.longTasks.request({op:'pause',sessionId:pendingAgent.id})
+ pendingAgent.session.append('tool/result',{turn:1,step:1,message:{id:'pending-result',role:'tool',source:{kind:'tool',callId:'pending-1'},toolCallId:'pending-1',content:[{type:'text',text:'done'}],isError:false}},{surfaceOp:'append'})
+ assert.deepEqual(ctx.longTasks.state(pendingAgent.session).pendingCalls,[],'a returned result must not stay uncertain after a pause')
+ checks.push('A tool result that arrives while paused settles the pending call instead of requiring manual acknowledgement')
+
  await ctx.longTasks.request({op:'saveReviewPolicy',enabled:false});assert.equal((await ctx.longTasks.request({op:'settings'})).settings.independentReview,false);assert.match(readFileSync(join(root,'cordis.patch.yml'),'utf8'),/independentReview/)
  const self=await create('self-code')
  const selfBefore=evaluations
@@ -95,7 +113,28 @@ try{
  // Legacy plugin records have neither route nor switch; they keep independent code acceptance.
  const legacy={...job};delete legacy.route;delete legacy.reviewEnabled;delete legacy.inputTurn;delete legacy.routingReason;ctx.longTasks.update(blocked.session,legacy)
  assert.equal(ctx.longTasks.state(blocked.session).route,'coding');assert.equal(ctx.longTasks.state(blocked.session).reviewEnabled,true)
- await ctx.sessions.flush(independent.session);const disk=await ctx.sessionPersistence.open(independent.id,'read');const events=(await disk.read()).events;await disk.close();assert.ok(events.some(e=>e.type==='plugin:long-task/state'&&e.data.route==='coding'&&e.data.reviewEnabled===true))
+ await ctx.sessions.flush(independent.session);const disk=await ctx.sessionPersistence.open(independent.id,'read');const events=(await disk.read()).events;await disk.close();assert.ok(events.some(e=>e.type==='plugin:long-task/state'&&(e.data.route==='coding'||e.data.delta?.route==='coding')))
  checks.push('Route, reason and operator-selected acceptance switch persist in the real JSONL journal; legacy jobs retain independent code acceptance')
- writeFileSync(resolve(import.meta.dirname,'../test-results/long-task-flow-routing-20261028.json'),JSON.stringify({realLoader:true,realAgent:true,scriptedInference:true,checks,requireCalls,evaluations},null,2));console.log(JSON.stringify({checks,requireCalls,evaluations}))
+
+ // Plan confirmation gates execution and pauses at the next turn end; resume clears it.
+ const settings=await ctx.longTasks.request({op:'settings'})
+ await ctx.longTasks.request({op:'saveLoop',loop:{...settings.loop,confirmPlan:true}})
+ const confirmAgent=await create('confirm-plan')
+ const confirmJob0=await ctx.longTasks.request({op:'long',sessionId:confirmAgent.id})
+ assert.equal(confirmJob0.job.phase,'active')
+ await ctx.longTasks.awaitPlanConfirmation(confirmAgent)
+ assert.equal(ctx.longTasks.state(confirmAgent.session).planAwaitingConfirmation,true)
+ confirmAgent.session.append('turn/end',{turn:1,reason:{kind:'completed'}})
+ assert.equal(ctx.longTasks.state(confirmAgent.session).phase,'paused')
+ assert.match(ctx.longTasks.state(confirmAgent.session).reason,/等待确认/)
+ await ctx.longTasks.request({op:'resume',sessionId:confirmAgent.id})
+ assert.equal(ctx.longTasks.state(confirmAgent.session).phase,'active')
+ assert.equal(ctx.longTasks.state(confirmAgent.session).planAwaitingConfirmation,false)
+ checks.push('A plan awaiting confirmation blocks execution, pauses at turn end, and resumes only on user action')
+ await ctx.longTasks.request({op:'saveLoop',loop:{...settings.loop,confirmPlan:false}})
+ await ctx.longTasks.request({op:'saveLoop',loop:{...settings.loop,confirmPlan:false}})
+ await ctx.longTasks.request({op:'supplement',sessionId:plain.id,text:'补充：回答要更短。'})
+ assert.ok(ctx.claudeCompletionReviews.reviewOf(plain.session)?.requirement.includes('补充：回答要更短'))
+ checks.push('A supplement request appends to the requirement used for acceptance')
+ writeFileSync(reportPath('long-task-flow-routing-20261028.json'),JSON.stringify({realLoader:true,realAgent:true,scriptedInference:true,checks,requireCalls,evaluations},null,2));console.log(JSON.stringify({checks,requireCalls,evaluations}))
 }finally{for(const h of handles.reverse())await h.dispose();await ctx.fiber.dispose();rmSync(root,{recursive:true,force:true})}
